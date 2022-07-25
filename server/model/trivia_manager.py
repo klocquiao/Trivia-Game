@@ -1,4 +1,7 @@
 import csv
+import random
+
+NUMBER_OF_ROUNDS = 5
 
 class TriviaManager:
     trivia_list = ["Hello"]
@@ -18,6 +21,10 @@ class TriviaManager:
                 
                 # Temporary until Trivia class is made
                 answer.append({row["answer"]: eval(row["correct?"])})
+
+    def getTriviaSet(self):
+        random.shuffle(self.trivia_list)
+        return self.trivia_list[:NUMBER_OF_ROUNDS + 1]
 
     def debugTriviaList(self):
         for item in self.trivia_list:
