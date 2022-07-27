@@ -1,5 +1,5 @@
 from server.model.trivia_manager import TriviaManager
-from server.model.trivia_manager import Round
+from server.model.round import Round
 from server.model.player_manager import PlayerManager
 
 class Game:
@@ -16,3 +16,6 @@ class Game:
         while (len(self.trivia_set) > 0):
             new_round = Round(self.trivia_set.pop())
             new_round.start()
+    
+        winner = self.players.get_winner()
+        print("The winner is " + self.winner.get_name()) 
