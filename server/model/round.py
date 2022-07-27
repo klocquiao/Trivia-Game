@@ -8,3 +8,4 @@ class Round:
     
     def start(self):
         while self.turns < NUMBER_OF_TURNS:
+            self.turns += 1

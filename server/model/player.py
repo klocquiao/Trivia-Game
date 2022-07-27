@@ -6,7 +6,10 @@ class Player:
     
     def __init__(self, socket):
         self.player_socket = socket
+        self.nickname = ""
+        self.score = 0
+        self.is_ready = False
     
-    def readyUp(self, nickname):
+    def ready_up(self, nickname):
         self.nickname = nickname
         self.is_ready = True
