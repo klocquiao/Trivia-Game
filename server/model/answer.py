@@ -5,9 +5,11 @@ class Answer:
         self.isCorrect = isCorrect
         self.isUsed = False
 
-    def setToUsed(self):
+    def set_to_used(self):
         self.isUsed = True
-
     
+    def check_correct(self):
+        return self.isCorrect
 
-
+    def check_is_used(self):
+        return self.isUsed
