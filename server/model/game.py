@@ -6,7 +6,7 @@ class Game:
     def __init__(self):
         tm = TriviaManager("../db.csv")
         self.trivia_set = tm.getTriviaSet()
-        self.players = PlayerManager
+        self.players = PlayerManager()
         
         while (len(self.players) < 4):
             print("Waiting for server to find players...")
@@ -15,3 +15,4 @@ class Game:
     def start(self):
         while (len(self.trivia_set) > 0):
             new_round = Round(self.trivia_set.pop())
+            new_round.start()

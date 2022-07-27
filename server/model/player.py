@@ -13,3 +13,6 @@ class Player:
     def ready_up(self, nickname):
         self.nickname = nickname
         self.is_ready = True
+    
+    def increment_score(self):
+        self.score += 1
