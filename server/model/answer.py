@@ -8,7 +8,7 @@ class Answer:
     def set_to_used(self):
         self.isUsed = True
     
-    def check_correct(self):
+    def check_is_correct(self):
         return self.isCorrect
 
     def check_is_used(self):

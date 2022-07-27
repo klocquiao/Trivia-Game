@@ -11,12 +11,12 @@ class Round:
     def start(self):
         while self.turns < NUMBER_OF_TURNS:
             user_choice = input()
-            while (not self.trivia.check_valid(int(user_choice))):
+            while (not self.trivia.get_answer(int(user_choice)).check_is_used()):
                 print("Answer has already been used!")
                 user_choice = input()
 
-            self.trivia.disable_answer(int(user_choice))
-            if (self.trivia.check_answer(int(user_choice))):
+            self.trivia.get_answer(int(user_choice)).set_to_used()
+            if (self.trivia.get_answer(int(user_choice)).check_is_correct()):
                 self.players.get_player(0).increment_score()
             
             
