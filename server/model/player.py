@@ -4,8 +4,8 @@ class Player:
     player_socket = None
     is_ready = False
     
-    def __init__(self, socket):
-        self.player_socket = socket
+    def __init__(self):
+        self.player_socket = None
         self.nickname = ""
         self.score = 0
         self.is_ready = False

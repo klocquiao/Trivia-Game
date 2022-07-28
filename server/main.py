@@ -1,4 +1,5 @@
-from server.model.game import Game
+from model.game import Game
 
 if __name__ == '__main__':
-    print("Hello world!")
+    new_game = Game()
+    new_game.start()
