@@ -13,7 +13,7 @@ class PlayerManager:
         for player in self.players:
             if (player.get_score() > winner.get_score()):
                 winner = player
-        
+                
         return winner
 
     def get_number_of_players(self):
