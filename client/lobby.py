@@ -1,40 +1,48 @@
+# Game Lobby page 
 import pygame, sys
+from player import Player
 from pygame.locals import *
 
 
-# --------- Game setup ---------
+# --------- Lobby page setup ---------
 BLACK = (0,0,0)
 WHITE = (255,255,255)
 ORANGE = (255, 128, 0)
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 500
+BOX_WIDTH = 230
+BOX_HEIGHT = 25
 
+# NAME_LABEL_WIDTH = 
 pygame.init()
 
-scrrenSize = [800,800] 
+scrrenSize = [SCREEN_WIDTH,SCREEN_HEIGHT] 
 screen = pygame.display.set_mode(scrrenSize)
 pygame.display.set_caption('*** Trivia Game ***')
 
-
-
-# ======================   ======================
-font = pygame.font.SysFont('Calibri', 25, True, False)
-
-
-# Used to manage how fast the screen updates
+# manage how fast the screen updates
 clock = pygame.time.Clock()
-frame_rate = 60  
+frame_rate = 60
 
-
-user_input = ''
+font_large = pygame.font.SysFont('Calibri', 25, True, False)  
+font_small = pygame.font.SysFont('Calibri', 20, True, False)  
 
 # create input box:
-input_box = pygame.Rect(300,300,150, 25)
+input_box = pygame.Rect(SCREEN_WIDTH/2 - BOX_WIDTH/2, SCREEN_HEIGHT/2 - BOX_HEIGHT/2 , BOX_WIDTH, BOX_HEIGHT)
+user_input = ''
+box_active = False
 
-# color_active = pygame.Color("lightskyblue")
+# create ready button
+BUTTON_WIDTH = 100
+BUTTON_HEIGHT = 30
+BUTTON_X = 350
+BUTTON_Y = 400
+ready_button = pygame.Rect(BUTTON_X, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT)
+button_active = False
+show_warning = False
 
 
-active = False
-
-# ========= Handle Event loop =======
+# ============== Lobby Page Event loop ==============
 run = True
 while run: 
     for event in pygame.event.get():
@@ -43,58 +51,94 @@ while run:
                 sys.exit()
 
         if event.type == pygame.MOUSEBUTTONDOWN:
+            # input is clicked
             if input_box.collidepoint(event.pos):
-                active = True
-
+                box_active = True
+                show_warning = False
             else:
-                active = False
+                box_active = False
 
-        if active:
-            color = ORANGE
+            # button is clicked
+            if ready_button.collidepoint(event.pos):
+                
+                button_active = True
+            else:
+                button_active = False
+
+        # button pressed up
+        if event.type == pygame.MOUSEBUTTONUP:
+            if ready_button.collidepoint(event.pos):
+                if len(user_input) == 0:
+                    show_warning = True
+                else: 
+                    player = Player(user_input)
+                    # ======= pass player to game manager =====
+                    print("---- save player name: ", player.getName()) 
+                    # ======= jump to game page ==========
+
+                button_active = False
+
+        if box_active:
+            box_color = ORANGE  #highlight 
         else:
-            color = WHITE
+            box_color = WHITE
 
-        # print("--- active:", active)
+        if button_active:
+            button_color = ORANGE
+        else:
+            button_color = WHITE
 
         if event.type == pygame.KEYDOWN:
-            
-            # handle user remove character:
-            if event.key == pygame.K_BACKSPACE:
-                user_input = user_input[:-1]
-                # user_input = user_input[0: (len(user_input) - 1)]
-                print(user_input)
+            #allow input only when input box is active:
+            if box_active:
+                # handle user remove character:
+                if event.key == pygame.K_BACKSPACE:
+                    user_input = user_input[0: (len(user_input) - 1)]
 
-            # handle any keys except ESCAPE key:
-            elif event.key != pygame.K_ESCAPE:
-                user_input += event.unicode
-                print(user_input)
+                # handle any keys except ESCAPE key:
+                elif event.key != pygame.K_ESCAPE:
+                    if len(user_input) < 15:
+                        user_input += event.unicode
+
+                # elif event.key != pygame.K_RETURN: #not working
+                #     user_input += event.unicode
 
     screen.fill(BLACK) #stay inside of while loop
 
 
-    # if active:
-    #     color = color_active
-
-    # input box draws on screen
-    pygame.draw.rect(screen, color, input_box, 2)
-
-    name_text = font.render(user_input, True, WHITE)
-    screen.blit(name_text, [input_box.x + 5, input_box.y])
-
 
     # must be with screen.fill in same level, and must be after it
     # ------ Display Title ------
-    # font = pygame.font.SysFont('Calibri', 25, True, False)
-    font = pygame.font.Font(None, 32)
-    title = font.render("*** Welcome to Trivia Game ***", True, ORANGE)
-    screen.blit(title, [200,200])
+    title = font_large.render("*** Welcome to Trivia Game ***", True, ORANGE)
+    title_center = title.get_rect(center=(SCREEN_WIDTH/2, SCREEN_HEIGHT/4))
+    screen.blit(title, title_center)
 
-    # ----- Name Input ------
-    namelabel = font.render("Enter your name: ", True, WHITE)
-    screen.blit(namelabel, [100, 300])
+    # ----- Display Name Input ------
+    name_label = font_large.render("Enter your name: ", True, WHITE)
+    name_label_center = name_label.get_rect(center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2.5))
+    screen.blit(name_label, name_label_center)
 
+    name_text = font_small.render(user_input, True, WHITE)
+    screen.blit(name_text, [input_box.x + 5, input_box.y])
+
+    # ----- Display Input Box -------
+    # draw input box to screen:
+    pygame.draw.rect(screen, box_color, input_box, 2)
+
+    #------ Display Ready button ------
+    pygame.draw.rect(screen, button_color, ready_button)
     
+    ready_text = font_small.render("Ready", True, BLACK)
+    ready_text_center = ready_text.get_rect(center = (BUTTON_X + BUTTON_WIDTH/2, BUTTON_Y + BUTTON_HEIGHT/2))
+    screen.blit(ready_text, ready_text_center)
+    
+    #------ Display warning ------
+    if show_warning:
+        warning = font_small.render("Please enter a name.", True, WHITE)
+        screen.blit(warning, [input_box.x + input_box.width + 10, input_box.y])
+
     # update game state
     pygame.display.update()
     
     clock.tick(frame_rate)
+
