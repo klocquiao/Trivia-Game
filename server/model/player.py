@@ -13,37 +13,37 @@ class Player():
     def __toStr__(self):
         return str(self.name)
 
-    def getName(self):
+    def get_name(self):
         return self._name
 
-    def getScore(self):
+    def get_score(self):
         return self._score
     
-    def isActive(self):
+    def is_active(self):
         return self._isActive
 
-    def isConnected(self):
+    def is_connected(self):
         return self._isConnected
 
     # Set methods: 
-    def setName(self, newName):
+    def set_name(self, newName):
         if isinstance(newName, str) == False: #check if name is string
             newName = str(newName)
         self._name = newName
 
-    def setScore(self, newScore):
+    def set_score(self, newScore):
         if isinstance(newScore, int) == False:
             self.scoreErrorMsg()
         else:
             self._score = newScore
 
-    def setToActive(self):
+    def set_to_active(self):
         self._isActive = True
 
-    def setToConnected(self):
+    def set_to_connected(self):
         self._isConnected = True
 
-    def scoreErrorMsg(self):
+    def score_error_msg(self):
         return "Invalid Score: only integer."
 
     ''' Might be more methods implemented later...'''
