@@ -1,8 +1,10 @@
-from ast import While
-from cgitb import text
 import pygame, sys
 from pygame.locals import *
+
+sys.path.append('.')
+sys.path.append('../server/model')
 import player
+
 
 FPS = 30 # frames per second, the general speed of the program
 WINDOW_WIDTH = 700 # size of window's width in pixels
