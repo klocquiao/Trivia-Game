@@ -12,8 +12,9 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 500
 BOX_WIDTH = 230
 BOX_HEIGHT = 25
+display_lobby = True
+lobby_page = 1
 
-# NAME_LABEL_WIDTH = 
 pygame.init()
 
 scrrenSize = [SCREEN_WIDTH,SCREEN_HEIGHT] 
@@ -44,7 +45,7 @@ show_warning = False
 
 # ============== Lobby Page Event loop ==============
 run = True
-while run: 
+while run and display_lobby: 
     for event in pygame.event.get():
         if event.type == pygame.QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 pygame.quit()
@@ -72,10 +73,12 @@ while run:
                     show_warning = True
                 else: 
                     player = Player(user_input)
-                    # ======= pass player to game manager =====
-                    print("---- save player name: ", player.getName()) 
-                    # ======= jump to game page ==========
-
+                    # print("---- save player name: ", player.getName()) 
+                    # # ======= pass player to game manager =====
+                    lobby_page += 1
+                    if lobby_page == 3:
+                        display_lobby = False
+                
                 button_active = False
 
         if box_active:
@@ -105,40 +108,51 @@ while run:
 
     screen.fill(BLACK) #stay inside of while loop
 
-
-
+    
     # must be with screen.fill in same level, and must be after it
-    # ------ Display Title ------
-    title = font_large.render("*** Welcome to Trivia Game ***", True, ORANGE)
-    title_center = title.get_rect(center=(SCREEN_WIDTH/2, SCREEN_HEIGHT/4))
-    screen.blit(title, title_center)
+    if lobby_page == 1:
+        # ------ Display Title ------
+        title = font_large.render("*** Welcome to Trivia Game ***", True, ORANGE)
+        title_center = title.get_rect(center=(SCREEN_WIDTH/2, SCREEN_HEIGHT/4))
+        screen.blit(title, title_center)
 
-    # ----- Display Name Input ------
-    name_label = font_large.render("Enter your name: ", True, WHITE)
-    name_label_center = name_label.get_rect(center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2.5))
-    screen.blit(name_label, name_label_center)
+        # ----- Display Name Input ------
+        name_label = font_large.render("Enter your name: ", True, WHITE)
+        name_label_center = name_label.get_rect(center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2.5))
+        screen.blit(name_label, name_label_center)
 
-    name_text = font_small.render(user_input, True, WHITE)
-    screen.blit(name_text, [input_box.x + 5, input_box.y])
+        name_text = font_small.render(user_input, True, WHITE)
+        screen.blit(name_text, [input_box.x + 5, input_box.y])
 
-    # ----- Display Input Box -------
-    # draw input box to screen:
-    pygame.draw.rect(screen, box_color, input_box, 2)
+        # ----- Display Input Box -------
+        # draw input box to screen:
+        pygame.draw.rect(screen, box_color, input_box, 2)
 
-    #------ Display Ready button ------
-    pygame.draw.rect(screen, button_color, ready_button)
-    
-    ready_text = font_small.render("Ready", True, BLACK)
-    ready_text_center = ready_text.get_rect(center = (BUTTON_X + BUTTON_WIDTH/2, BUTTON_Y + BUTTON_HEIGHT/2))
-    screen.blit(ready_text, ready_text_center)
-    
-    #------ Display warning ------
-    if show_warning:
-        warning = font_small.render("Please enter a name.", True, WHITE)
-        screen.blit(warning, [input_box.x + input_box.width + 10, input_box.y])
+        #------ Display Ready button ------
+        pygame.draw.rect(screen, button_color, ready_button)
+        
+        ready_text = font_small.render("Ready", True, BLACK)
+        ready_text_center = ready_text.get_rect(center = (BUTTON_X + BUTTON_WIDTH/2, BUTTON_Y + BUTTON_HEIGHT/2))
+        screen.blit(ready_text, ready_text_center)
+        
+        #------ Display warning ------
+        if show_warning:
+            warning = font_small.render("Please enter a name.", True, WHITE)
+            screen.blit(warning, [input_box.x + input_box.width + 10, input_box.y])
+
+
+# =========== Only for tesing ready button, will delete later ========== 
+    if lobby_page == 2:
+        title = font_large.render("*** The game page! ***", True, ORANGE)
+        title_center = title.get_rect(center=(SCREEN_WIDTH/2, SCREEN_HEIGHT/4))
+        screen.blit(title, title_center)
+
 
     # update game state
     pygame.display.update()
     
     clock.tick(frame_rate)
+
+
+
 
