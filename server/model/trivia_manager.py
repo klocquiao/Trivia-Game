@@ -1,14 +1,13 @@
 import csv
 import random
-from trivia import Trivia
-from answer import Answer
+from .trivia import Trivia
+from .answer import Answer
 
-NUMBER_OF_ROUNDS = 5
+NUMBER_OF_ROUNDS = 2
 
 class TriviaManager:
-    trivia_list = [Trivia()]
-
     def __init__(self, filename):
+        self.trivia_list = []
         with open(filename, newline='') as csvfile:
             trivia_reader = csv.DictReader(csvfile)
 
@@ -16,7 +15,6 @@ class TriviaManager:
             count = -1
             for row in trivia_reader:
                 if row["question"] != question:
-                    # Create trivia question and place into Trivias array....
                     new_trivia = Trivia(row["question"])
                     self.trivia_list.append(new_trivia)
                     count+1
