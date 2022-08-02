@@ -19,7 +19,8 @@ def receiver_runner():
 
 def handle_message(data):
     if data == "test":
-        send_message("Hello world!")
+        tm = {"Token": "Test", "message": "Hello world!"}
+        send_message(tm)
 
 # To be binded by front-end team members
 def send_message(message):
@@ -33,6 +34,4 @@ receiver_thread.start()
 Token setup:
     - Json
     - Format: {Token: String, Data:....}
-
-
 """
