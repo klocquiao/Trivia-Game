@@ -7,18 +7,19 @@ from pygame.locals import *
 # --------- Lobby page setup ---------
 BLACK = (0,0,0)
 WHITE = (255,255,255)
-ORANGE = (255, 128, 0)
-SCREEN_WIDTH = 800
+NAVYBLUE = (60,60,100) # bg color
+ORANGE = (255,128,0)
+SCREEN_WIDTH = 700
 SCREEN_HEIGHT = 500
-BOX_WIDTH = 230
-BOX_HEIGHT = 25
+BOX_WIDTH = 230     # text input box
+BOX_HEIGHT = 25     # text input box
 display_lobby = True
 lobby_page = 1
 
 pygame.init()
 
-scrrenSize = [SCREEN_WIDTH,SCREEN_HEIGHT] 
-screen = pygame.display.set_mode(scrrenSize)
+screenSize = [SCREEN_WIDTH,SCREEN_HEIGHT] 
+screen = pygame.display.set_mode(screenSize)
 pygame.display.set_caption('*** Trivia Game ***')
 
 # manage how fast the screen updates
@@ -36,8 +37,8 @@ box_active = False
 # create ready button
 BUTTON_WIDTH = 100
 BUTTON_HEIGHT = 30
-BUTTON_X = 350
-BUTTON_Y = 400
+BUTTON_X = SCREEN_WIDTH/2 - BUTTON_WIDTH/2
+BUTTON_Y = SCREEN_HEIGHT/2 + SCREEN_HEIGHT/4
 ready_button = pygame.Rect(BUTTON_X, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT)
 button_active = False
 show_warning = False
@@ -73,8 +74,8 @@ while run and display_lobby:
                     show_warning = True
                 else: 
                     player = Player(user_input)
-                    # print("---- save player name: ", player.getName()) 
-                    # # ======= pass player to game manager =====
+                    print("---- save player name: ", player.get_name()) 
+                    # # ======= pass player name to trivia manager =====
                     lobby_page += 1
                     if lobby_page == 3:
                         display_lobby = False
@@ -103,10 +104,7 @@ while run and display_lobby:
                     if len(user_input) < 15:
                         user_input += event.unicode
 
-                # elif event.key != pygame.K_RETURN: #not working
-                #     user_input += event.unicode
-
-    screen.fill(BLACK) #stay inside of while loop
+    screen.fill(NAVYBLUE) #stay inside of while loop
 
     
     # must be with screen.fill in same level, and must be after it
@@ -143,7 +141,7 @@ while run and display_lobby:
 
 # =========== Only for tesing ready button, will delete later ========== 
     if lobby_page == 2:
-        title = font_large.render("*** The game page! ***", True, ORANGE)
+        title = font_large.render("*** Please wait here for other players connected. ***", True, ORANGE)
         title_center = title.get_rect(center=(SCREEN_WIDTH/2, SCREEN_HEIGHT/4))
         screen.blit(title, title_center)
 
