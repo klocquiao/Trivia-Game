@@ -1,8 +1,8 @@
 import pygame, sys
 from pygame.locals import *
 
-sys.path.append('.')
-sys.path.append('../server/model')
+# sys.path.append('.')
+# sys.path.append('../server/model')
 import player
 
 
@@ -44,7 +44,7 @@ ALL_ANSWERS = ('Pear', 'Apple', 'Mango', 'Peach',
             'Tomato', 'Pepper', 'Coconut', 'Pumpkin',
             'Eggplant', 'Cucumber', 'Avocado', 'Olive'
             )
-RIGHT_ANSWERS = ('Pear', 'Apple', 'Mango')
+# RIGHT_ANSWERS = ('Pear', 'Apple', 'Mango')
 
 
 def main():
@@ -105,7 +105,7 @@ def main():
         if boxx != None and boxy != None: # If user touch answer box inside answer_board
             if not is_pressed_answer_boxes[boxx][boxy]: # If user only touch, not pressed
                 draw_highlight_box(boxx, boxy)
-            if mouse_pressed and main_answer_board[boxx][boxy] in RIGHT_ANSWERS: # When user pressed and choose correct answer
+            if not is_pressed_answer_boxes[boxx][boxy] and mouse_pressed: # When user pressed and choose correct answer
                 is_pressed_answer_boxes[boxx][boxy] = True
                 player_list[0].increment_score()
        
