@@ -74,7 +74,7 @@ while run and display_lobby:
                     show_warning = True
                 else: 
                     player = Player(user_input)
-                    print("---- save player name: ", player.get_name()) 
+                    # print("---- save player name: ", player.get_name()) 
                     # # ======= pass player name to trivia manager =====
                     lobby_page += 1
                     if lobby_page == 3:
