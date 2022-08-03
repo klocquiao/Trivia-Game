@@ -34,7 +34,7 @@ def connection_runner():
 
 def handle_message(data):
     if data == "test":
-        tm = {"Token": "Test", "message": "Hello world!"}
+        tm = {"token": "Test", "message": "Hello world!"}
         broadcast_message(tm)
 
 def broadcast_message(message):
