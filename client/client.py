@@ -19,7 +19,7 @@ def receiver_runner():
 
 def handle_message(data):
     if data == "test":
-        tm = {"Token": "Test", "message": "Hello world!"}
+        tm = {"token": "Test", "message": "Hello world!"}
         send_message(tm)
 
 # To be binded by front-end team members
@@ -27,8 +27,9 @@ def send_message(message):
     data = json.dumps(message)
     my_socket.sendall(bytes(data,encoding="utf-8"))
 
-receiver_thread = threading.thread(target=receiver_runner)
-receiver_thread.start()
+def start_client():
+    receiver_thread = threading.thread(target=receiver_runner)
+    receiver_thread.start()
 
 """
 Token setup:
