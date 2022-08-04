@@ -1,11 +1,12 @@
 import socket
 import json 
 from threading import Thread
-from .game import Game
 from .player import Player
 
 HOST = "127.0.0.1"
 PORT = 12345
+
+NUMBER_OF_CLIENTS = 4
 
 my_socket = None
 game = None
@@ -20,8 +21,8 @@ def receiver_runner(client):
             my_socket.close()
             break
 
-def connection_runner():
-    while True:
+def find_players():
+    while game.player_manager.get_number_of_players() < NUMBER_OF_CLIENTS:
         # Accept incoming client
         print("Listening for clients")
         client, address = my_socket.accept()
@@ -65,8 +66,7 @@ def start_server(new_game):
     my_socket.bind((HOST, PORT))
     my_socket.listen()
 
-    connection_thread = Thread(target=connection_runner)
-    connection_thread.start()
+    find_players()
 
 def close_socket():
     my_socket.close()

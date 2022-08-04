@@ -2,8 +2,7 @@ from .trivia_manager import TriviaManager
 from .round import Round
 from .player_manager import PlayerManager
 from .player import Player
-
-NUMBER_OF_PLAYERS = 2
+from .server import start_server
 
 class Game:
     def __init__(self):
@@ -13,9 +12,8 @@ class Game:
         self.current_round = None
 
     def start(self):
-        while (self.player_manager.get_number_of_players() < NUMBER_OF_PLAYERS):
-            True
-        
+        start_server(self)
+
         print("All players are present! Starting game...")
         while (len(self.trivia_set) > 0):
             self.current_round = Round(self.trivia_set.pop(), self.player_manager)
