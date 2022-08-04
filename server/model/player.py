@@ -1,3 +1,5 @@
+import socket
+
 class Player:
     '''Instantiates a Player with given name'''
     def __init__(self, name, socket, addr):
