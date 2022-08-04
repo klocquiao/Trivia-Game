@@ -1,8 +1,7 @@
 from model.game import Game
-import model.server
-from server.model.server import start_receiver, start_server
+from model.server import start_server
 
 if __name__ == '__main__':
-    start_server()
     new_game = Game()
+    start_server(new_game)
     new_game.start()

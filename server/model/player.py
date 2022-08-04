@@ -13,6 +13,9 @@ class Player:
     def get_name(self):
         return self.name
 
+    def get_socket(self):
+        return self.socket
+
     def get_score(self):
         return self.score
 

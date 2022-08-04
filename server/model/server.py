@@ -1,7 +1,8 @@
 import socket
 import json 
 import threading
-import selectors
+from .game import Game
+
 from .player import Player
 HOST = "127.0.0.1"
 PORT = 12345
@@ -10,7 +11,7 @@ my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 my_socket.bind((HOST, PORT))
 my_socket.listen()
 
-clients = []
+game = None
 
 def receiver_runner(client):
     while True:
@@ -22,27 +23,38 @@ def receiver_runner(client):
             my_socket.close()
 
 def connection_runner():
+    global game
     while True:
+        # Accept incoming client
         client, address = my_socket.accept()
+
+        # Request a alias for the incoming client
         req = json.dumps({"token": "Name"})
         client.sendall(bytes(req, encoding="utf-8"))
-        res = client.recv(1024).decode("utf-8")
-        newPlayer = Player(res["Name"], client, address)
 
+        # Receive the requested information and create a new player object
+        res = client.recv(1024).decode("utf-8")
+        new_player = Player(res["Name"], client, address)
+        game.player_manager.add_player(new_player)
+
+        # Start a receiver thread for the new client
         receiver_thread = threading.thread(target=receiver_runner)
         receiver_thread.start()
 
 def handle_message(data):
+    global game
     if data == "test":
         tm = {"token": "Test", "message": "Hello world!"}
         broadcast_message(tm)
 
 def broadcast_message(message):
     data = json.dumps(message)
-    for client in clients:
-        client.sendall(bytes(data,encoding="utf-8"))
+    for player in game.player_manager.get_players():
+        player.get_socket().sendall(bytes(data,encoding="utf-8"))
 
-def start_server():
+def start_server(new_game):
+    global game
+    game = new_game
     connection_thread = threading.thread(target=connection_runner)
     connection_thread.start()
 
