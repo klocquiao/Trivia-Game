@@ -2,22 +2,22 @@ from .trivia_manager import TriviaManager
 from .round import Round
 from .player_manager import PlayerManager
 from .player import Player
-
-NUMBER_OF_PLAYERS = 1
+from .server import start_server
 
 class Game:
     def __init__(self):
         tm = TriviaManager("./db.csv")
         self.trivia_set = tm.get_trivia_set()
-        self.players = PlayerManager()
-        self.players.add_player(Player("player1"))
-        while (self.players.get_number_of_players() < NUMBER_OF_PLAYERS):
-            print("Waiting for server to find players...")
+        self.player_manager = PlayerManager()
+        self.current_round = None
 
     def start(self):
+        start_server(self)
+
+        print("All players are present! Starting game...")
         while (len(self.trivia_set) > 0):
-            new_round = Round(self.trivia_set.pop(), self.players)
-            new_round.start()
+            self.current_round = Round(self.trivia_set.pop(), self.player_manager)
+            self.current_round.start()
     
         winner = self.players.get_winner()
         print("The winner is " + winner.get_name()) 

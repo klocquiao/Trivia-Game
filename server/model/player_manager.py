@@ -7,6 +7,9 @@ class PlayerManager:
     
     def get_player(self, index):
         return self.players[index]
+        
+    def get_players(self):
+        return self.players
     
     def get_winner(self):
         winner = self.players[0]
