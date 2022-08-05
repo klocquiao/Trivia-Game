@@ -4,13 +4,14 @@ import json
 
 HOST = "127.0.0.1"
 PORT = 12345
+MAX_MESSAGE_SIZE = 4096 
 
 my_socket = None
 
 def receiver_runner():
     while True:
         try:
-            data = my_socket.recv(1024).decode("utf-8")
+            data = my_socket.recv(MAX_MESSAGE_SIZE).decode("utf-8")
             handle_message(data)
         except:
             print("An error has occured!")

@@ -7,6 +7,7 @@ HOST = "127.0.0.1"
 PORT = 12345
 
 NUMBER_OF_CLIENTS = 4
+MAX_MESSAGE_SIZE = 4096 
 
 my_socket = None
 game = None
@@ -14,10 +15,10 @@ game = None
 def receiver_runner(client):
     while True:
         try:
-            data = client.recv(1024).decode("utf-8")
+            data = client.recv(MAX_MESSAGE_SIZE).decode("utf-8")
             handle_message(data)
         except:
-            print("An error has occured when receiver a message!")
+            print("Client " + client.get_name() + " has crashed! Exiting game...")
             my_socket.close()
             break
 
@@ -34,7 +35,7 @@ def find_players():
             client.sendall(bytes(req, encoding="utf-8"))
 
             # Receive the requested information and create a new player object
-            res = json.loads(client.recv(1024).decode("utf-8"))
+            res = json.loads(client.recv(MAX_MESSAGE_SIZE).decode("utf-8"))
             new_player = Player(res["name"], client, address)
             game.player_manager.add_player(new_player)
             print("Incoming player name: " + res["name"])
@@ -45,7 +46,6 @@ def find_players():
 
         except:
             print("An error has occured when handling new client!")
-            break
 
 def handle_message(data):
     if data == "test":
