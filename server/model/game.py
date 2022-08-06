@@ -3,6 +3,7 @@ from .round import Round
 from .player_manager import PlayerManager
 from .player import Player
 from .server import broadcast_message, start_server
+import time
 
 class Game:
     def __init__(self):
@@ -10,21 +11,22 @@ class Game:
         self.trivia_set = tm.get_trivia_set()
         self.player_manager = PlayerManager()
         self.current_round = None
+        self.rounds = 1
 
     def start(self):
         start_server(self)
 
-        print("All players are present! Starting game...")
-        
-        round_number = 1
+        print("All players are present! Starting game in 3 seconds")
+
         while (len(self.trivia_set) > 0):
+            time.sleep(3)
             trivia = self.trivia_set.pop()
-            broadcast_message({"token" : "Round", "number": round_number, "question" : trivia.get_question(), "answers": trivia.get_answers()})
+            broadcast_message({"token" : "Round", "number": self.rounds, "question" : trivia.get_question(), "answers": trivia.get_answers()})
 
             self.current_round = Round(trivia, self.player_manager)
             self.current_round.start()
+            self.rounds += 1
 
-            rounds += 1
-    
+
         winner = self.players.get_winner()
         print("The winner is " + winner.get_name())  

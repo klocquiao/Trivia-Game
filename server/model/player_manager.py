@@ -4,13 +4,19 @@ class PlayerManager:
     
     def add_player(self, player):
         self.players.append(player)
-    
+
+    def find_player(self, name):
+        return filter(lambda x: str(x) == name, self.players)
+        
     def get_player(self, index):
         return self.players[index]
-        
+
     def get_players(self):
         return self.players
-    
+
+    def get_player_names(self):
+        return list(map(lambda x: str(x), self.players))
+
     def get_winner(self):
         winner = self.players[0]
         for player in self.players:

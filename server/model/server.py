@@ -39,7 +39,7 @@ def find_players():
             new_player = Player(res["name"], client, address)
 
             # Broadcast new player information
-            broadcast_message({"token": "Player", "Name": res["name"], "Score": 0})
+            broadcast_message({"token": "Players", "players": game.player_manager.get_player_names()})
 
             game.player_manager.add_player(new_player)
             print("Incoming player name: " + res["name"])
@@ -53,9 +53,8 @@ def find_players():
 
 def handle_message(data):
     message = json.loads(data)
-    if message["token"] == "Name":
-        tm = {"token": "Name", "name": "ClareKyleDamirAnnaKhanh"}
-        broadcast_message(tm)
+    if message["token"] == "Choice":
+        game.current_round.check_player_choice(message)
 
 def broadcast_message(message):
     data = json.dumps(message)
@@ -73,7 +72,7 @@ def start_server(new_game):
 
     find_players()
 
-def close_socket():
+def close_server():
     my_socket.close()
     
 """

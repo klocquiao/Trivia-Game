@@ -9,8 +9,8 @@ class Player:
         self.score = 0
         self.is_chosen = False     # to keep track whether player is in the current game
     
-    def __toStr__(self):
-        return str(self.name)
+    def __str__(self):
+        return self.name
 
     def get_name(self):
         return self.name
