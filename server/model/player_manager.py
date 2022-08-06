@@ -27,3 +27,14 @@ class PlayerManager:
 
     def get_number_of_players(self):
         return len(self.players)
+    
+    def reset_players_state(self):
+        for player in self.players:
+            player.set_is_chosen(False)
+
+    def is_players_ready(self):
+        for player in self.players:
+            if not player.is_chosen():
+                return False
+        
+        return True

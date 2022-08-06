@@ -61,6 +61,11 @@ def broadcast_message(message):
     for player in game.player_manager.get_players():
         player.get_socket().sendall(bytes(data,encoding="utf-8"))
 
+
+def send_message(player, message):
+    data = json.dumps(message)
+    player.get_socket().sendall(bytes(data,encoding="utf-8"))
+
 def start_server(new_game):
     global game
     global my_socket

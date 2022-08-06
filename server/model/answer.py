@@ -1,3 +1,7 @@
+from threading import Thread, Lock
+
+mutex = Lock()
+
 class Answer:
     def __init__ (self, answer, is_correct):
         self.answer = answer
@@ -6,12 +10,12 @@ class Answer:
 
     def __repr__(self):
         return self.answer
-
-    def set_to_used(self):
-        self.is_used = True
     
+    def check_usage(self):
+        mutex.acquire()
+        if not self.is_used:
+            self.is_used = True
+        mutex.release()
+
     def check_is_correct(self):
         return self.is_correct
-
-    def check_is_used(self):
-        return self.is_used

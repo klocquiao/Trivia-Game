@@ -27,6 +27,5 @@ class Game:
             self.current_round.start()
             self.rounds += 1
 
-
         winner = self.players.get_winner()
         print("The winner is " + winner.get_name())  
