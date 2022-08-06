@@ -7,7 +7,7 @@ class Player:
         self.socket = socket
         self.addr = addr
         self.score = 0
-        self.is_active = False     # to keep track whether player is in the current game
+        self.is_chosen = False     # to keep track whether player is in the current game
     
     def __toStr__(self):
         return str(self.name)
@@ -24,8 +24,8 @@ class Player:
     def increment_score(self):
         self.score += 1
 
-    def is_active(self):
-        return self.is_active
+    def is_chosen(self):
+        return self.is_chosen
 
     def set_score(self, newScore):
         if isinstance(newScore, int) == False:
@@ -33,8 +33,8 @@ class Player:
         else:
             self.score = newScore
 
-    def set_activity(self, bool):
-        self.is_active = bool
+    def set_is_chosen(self, val):
+        self.is_chosen = val
 
     def score_error_msg(self):
         return "Invalid Score: only integer."

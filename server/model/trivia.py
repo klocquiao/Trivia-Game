@@ -6,6 +6,12 @@ class Trivia:
         self.question = question
         self.answers = []
 
+    def get_question(self):
+        return self.question
+
+    def get_answers(self):
+        return self.answers
+        
     def shuffle_answers(self):
         random.shuffle(self.answers)
     

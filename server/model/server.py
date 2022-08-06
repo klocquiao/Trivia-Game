@@ -37,6 +37,10 @@ def find_players():
             # Receive the requested information and create a new player object
             res = json.loads(client.recv(MAX_MESSAGE_SIZE).decode("utf-8"))
             new_player = Player(res["name"], client, address)
+
+            # Broadcast new player information
+            broadcast_message({"token": "Player", "Name": res["name"], "Score": 0})
+
             game.player_manager.add_player(new_player)
             print("Incoming player name: " + res["name"])
 
@@ -48,8 +52,9 @@ def find_players():
             print("An error has occured when handling new client!")
 
 def handle_message(data):
-    if data == "test":
-        tm = {"token": "Test", "message": "Hello world!"}
+    message = json.loads(data)
+    if message["token"] == "Name":
+        tm = {"token": "Name", "name": "ClareKyleDamirAnnaKhanh"}
         broadcast_message(tm)
 
 def broadcast_message(message):

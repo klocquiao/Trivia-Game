@@ -3,7 +3,7 @@ import random
 from .trivia import Trivia
 from .answer import Answer
 
-NUMBER_OF_ROUNDS = 2
+NUMBER_OF_ROUNDS = 5
 
 class TriviaManager:
     def __init__(self, filename):
