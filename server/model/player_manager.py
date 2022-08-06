@@ -14,7 +14,7 @@ class PlayerManager:
     def get_players(self):
         return self.players
 
-    def get_player_names(self):
+    def get_players_str(self):
         return list(map(lambda x: str(x), self.players))
 
     def get_winner(self):

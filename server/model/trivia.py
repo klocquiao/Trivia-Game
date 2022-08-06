@@ -11,7 +11,10 @@ class Trivia:
 
     def get_answers(self):
         return self.answers
-        
+
+    def get_answers_str(self):
+        return list(map(lambda x: str(x), self.answers))
+
     def shuffle_answers(self):
         random.shuffle(self.answers)
     

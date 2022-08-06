@@ -8,7 +8,7 @@ class Answer:
         self.is_correct = is_correct
         self.is_used = False
 
-    def __repr__(self):
+    def __str__(self):
         return self.answer
     
     def check_usage(self):

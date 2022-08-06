@@ -2,7 +2,7 @@ from .trivia_manager import TriviaManager
 from .round import Round
 from .player_manager import PlayerManager
 from .player import Player
-from .server import broadcast_message, start_server
+from .server import broadcast_message, start_server, close_server
 import time
 
 class Game:
@@ -21,11 +21,12 @@ class Game:
         while (len(self.trivia_set) > 0):
             time.sleep(3)
             trivia = self.trivia_set.pop()
-            broadcast_message({"token" : "Round", "number": self.rounds, "question" : trivia.get_question(), "answers": trivia.get_answers()})
+            broadcast_message({"token" : "Round", "number": self.rounds, "question" : trivia.get_question(), "answers": trivia.get_answers_str()})
 
             self.current_round = Round(trivia, self.player_manager)
             self.current_round.start()
             self.rounds += 1
 
         winner = self.players.get_winner()
-        print("The winner is " + winner.get_name())  
+        broadcast_message({"token" : "Result", "winner": winner.get_name()})
+        close_server()
