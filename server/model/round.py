@@ -21,8 +21,7 @@ class Round:
             self.turns += 1
             self.round_event.clear()
     
-    def check_player_choice(self, message):
-
+    def check_player_answer(self, message):
         # Need mutexes here
         player_choice = message["answer"]
         player = self.players.find_player(message["name"])
@@ -33,7 +32,7 @@ class Round:
 
             if (self.trivia.get_answer(player_choice).check_is_correct()):
                 player.increment_score()
-                
+
             print(player.get_name() + " obtained answer " + str(self.trivia.get_answer(player_choice)))
             broadcast_message({"token": "Player", "Name": player.get_name(), "Score": player.get_score()})
 

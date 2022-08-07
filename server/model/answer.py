@@ -20,6 +20,5 @@ class Answer:
 
         return temp
 
-
     def check_is_correct(self):
         return self.is_correct

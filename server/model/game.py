@@ -18,6 +18,9 @@ class Game:
 
         print("All players are present! Starting game in 3 seconds")
 
+        # Broadcast finalized player array
+        broadcast_message({"token": "Players", "players": self.player_manager.get_players_str()})
+        
         while (len(self.trivia_set) > 0):
             time.sleep(3)
 

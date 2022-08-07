@@ -39,8 +39,6 @@ def find_players():
             new_player = Player(res["name"], client, address)
             game.player_manager.add_player(new_player)
 
-            # Broadcast new player information
-            broadcast_message({"token": "Players", "players": game.player_manager.get_players_str()})
             print("Incoming player name: " + res["name"])
 
             # Start a receiver thread for the new client
@@ -52,8 +50,8 @@ def find_players():
 
 def handle_message(data):
     message = json.loads(data)
-    if message["token"] == "Choice":
-        game.current_round.check_player_choice(message)
+    if message["token"] == "Answer":
+        game.current_round.check_player_answer(message)
 
 def broadcast_message(message):
     data = json.dumps(message)
