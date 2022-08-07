@@ -14,6 +14,7 @@ class Round:
 
     def start(self):
         while self.turns < NUMBER_OF_TURNS:
+            print("Turn " + str(self.turns))
             broadcast_message({"token" : "Turn", "number" : self.turns})
             self.round_event.wait()
 
@@ -30,11 +31,13 @@ class Round:
         if (self.trivia.get_answer(player_choice).check_usage()):
             player.set_is_chosen = True
 
+            print(player.get_name() + " obtained answer " + str(self.trivia.get_answer(player_choice)))
             if (self.trivia.get_answer(player_choice).check_is_correct()):
                 player.increment_score()
                 broadcast_message({"token": "Player", "Name": player.get_name(), "Score": player.get_score()})
 
         else:
+            print(player.get_name() + " failed race condition for " + str(self.trivia.get_answer(player_choice)))
             send_message(player, {"token": "reject"})
 
         if self.players.is_players_ready():

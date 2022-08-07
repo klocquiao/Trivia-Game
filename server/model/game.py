@@ -20,13 +20,20 @@ class Game:
 
         while (len(self.trivia_set) > 0):
             time.sleep(3)
+
             trivia = self.trivia_set.pop()
             broadcast_message({"token" : "Round", "number": self.rounds, "question" : trivia.get_question(), "answers": trivia.get_answers_str()})
+            print("Round " + str(self.rounds))
 
             self.current_round = Round(trivia, self.player_manager)
             self.current_round.start()
+
+
             self.rounds += 1
 
+
         winner = self.players.get_winner()
+        print("The winner is " + winner.get_name())
+
         broadcast_message({"token" : "Result", "winner": winner.get_name()})
         close_server()
