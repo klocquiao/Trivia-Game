@@ -29,6 +29,7 @@ class Round:
         # Player was able to access shared object
         if (self.trivia.get_answer(player_choice).check_usage()):
             player.set_is_chosen = True
+            broadcast_message(player, {"token": "Lock", "answer": player_choice})
 
             if (self.trivia.get_answer(player_choice).check_is_correct()):
                 player.increment_score()
@@ -38,7 +39,7 @@ class Round:
 
         else:
             print(player.get_name() + " failed race condition for " + str(self.trivia.get_answer(player_choice)))
-            send_message(player, {"token": "Reject"})
+            send_message(player, {"token": "Locked"})
 
         if self.players.is_players_ready():
             self.players.reset_player_state()
