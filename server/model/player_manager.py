@@ -6,7 +6,9 @@ class PlayerManager:
         self.players.append(player)
 
     def find_player(self, name):
-        return filter(lambda x: str(x) == name, self.players)
+        for player in self.players:
+            if (player.get_name() == name):
+                return player
         
     def get_player(self, index):
         return self.players[index]

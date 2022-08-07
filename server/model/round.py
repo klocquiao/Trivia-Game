@@ -40,16 +40,3 @@ class Round:
         if self.players.is_players_ready():
             self.players.reset_player_state()
             self.round_event.set()
-             
-
-
-        # while self.trivia.get_answer(int(user_choice)).check_is_used():
-        #     print("Answer has already been used!")
-        #     user_choice = input()
-
-        # self.trivia.get_answer(int(user_choice)).set_to_used()
-        # if self.trivia.get_answer(int(user_choice)).check_is_correct():
-        #     self.players.get_player(0).increment_score()
-        #     print("Correct!")
-        # else:
-        #     print("Incorrect!")

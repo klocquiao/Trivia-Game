@@ -37,11 +37,10 @@ def find_players():
             # Receive the requested information and create a new player object
             res = json.loads(client.recv(MAX_MESSAGE_SIZE).decode("utf-8"))
             new_player = Player(res["name"], client, address)
+            game.player_manager.add_player(new_player)
 
             # Broadcast new player information
-            broadcast_message({"token": "Players", "players": game.player_manager.get_player_names()})
-
-            game.player_manager.add_player(new_player)
+            broadcast_message({"token": "Players", "players": game.player_manager.get_players_str()})
             print("Incoming player name: " + res["name"])
 
             # Start a receiver thread for the new client
@@ -79,9 +78,3 @@ def start_server(new_game):
 
 def close_server():
     my_socket.close()
-    
-"""
-Token setup:
-    - Json
-    - Format: {Token: String, Data:....}
-"""

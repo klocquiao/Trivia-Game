@@ -1,7 +1,6 @@
 import socket
 
 class Player:
-    '''Instantiates a Player with given name'''
     def __init__(self, name, socket, addr):
         self.name = name
         self.socket = socket
@@ -38,5 +37,3 @@ class Player:
 
     def score_error_msg(self):
         return "Invalid Score: only integer."
-
-    ''' Might be more methods implemented later...'''
