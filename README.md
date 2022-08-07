@@ -15,3 +15,6 @@
 - Visual Studio or Spyder are recommanded running environments.
 
 - More detail for help, see https://www.pygame.org/wiki/GettingStarted
+
+## Run the game
+- To Start server, at server module, run `python3 main.py`
