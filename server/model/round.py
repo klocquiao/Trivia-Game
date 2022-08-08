@@ -9,11 +9,11 @@ class Round:
         self.trivia = trivia
         self.trivia.shuffle_answers()
         self.players = players
-        self.turns = 0
+        self.turns = 1
         self.round_event = threading.Event()
 
     def start(self):
-        while self.turns < NUMBER_OF_TURNS:
+        while self.turns <= NUMBER_OF_TURNS:
             print("Turn " + str(self.turns))
             broadcast_message({"token" : "Turn", "number" : self.turns})
             self.round_event.wait()
