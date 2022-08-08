@@ -41,8 +41,3 @@ def start_client():
 if __name__ == '__main__':
     start_client()
 
-"""
-Token setup:
-    - Json
-    - Format: {Token: String, Data:....}
-"""
