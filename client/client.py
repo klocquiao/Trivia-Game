@@ -18,10 +18,16 @@ def receiver_runner():
             my_socket.close()
             break
 
+# get player's name from lobby
+def new_player(pname):
+    global player_name
+    player_name = pname
+
 def handle_message(data):
     message = json.loads(data)
     if message["token"] == "Name":
-        tm = {"token": "Name", "name": "ClareKyleDamirAnnaKhanh"}
+        # tm = {"token": "Name", "name": "ClareKyleDamirAnnaKhanh"} #tester
+        tm = {"token": "Name", "name": player_name}
         send_message(tm)
 
 # To be binded by front-end team members
@@ -29,6 +35,7 @@ def send_message(message):
     data = json.dumps(message)
     my_socket.sendall(bytes(data,encoding="utf-8"))
 
+# Be called in lobby
 def start_client():
     global my_socket
     my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -38,6 +45,8 @@ def start_client():
     receiver_thread = Thread(target=receiver_runner)
     receiver_thread.start()
 
-if __name__ == '__main__':
-    start_client()
-
+"""
+Token setup:
+    - Json
+    - Format: {Token: String, Data:....}
+"""
