@@ -38,6 +38,7 @@ def find_players():
             res = json.loads(client.recv(MAX_MESSAGE_SIZE).decode("utf-8"))
             new_player = Player(res["name"], client, address)
             game.player_manager.add_player(new_player)
+
             print("Incoming player name: " + res["name"])
 
             # Start a receiver thread for the new client
@@ -48,14 +49,19 @@ def find_players():
             print("An error has occured when handling new client!")
 
 def handle_message(data):
-    if data == "test":
-        tm = {"token": "Test", "message": "Hello world!"}
-        broadcast_message(tm)
+    message = json.loads(data)
+    if message["token"] == "Answer":
+        game.current_round.check_player_answer(message)
 
 def broadcast_message(message):
     data = json.dumps(message)
     for player in game.player_manager.get_players():
         player.get_socket().sendall(bytes(data,encoding="utf-8"))
+
+
+def send_message(player, message):
+    data = json.dumps(message)
+    player.get_socket().sendall(bytes(data,encoding="utf-8"))
 
 def start_server(new_game):
     global game
@@ -68,11 +74,5 @@ def start_server(new_game):
 
     find_players()
 
-def close_socket():
+def close_server():
     my_socket.close()
-    
-"""
-Token setup:
-    - Json
-    - Format: {Token: String, Data:....}
-"""
