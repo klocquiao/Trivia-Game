@@ -10,7 +10,6 @@ class TriviaManager:
         self.trivia_list = []
         with open(filename, newline='') as csvfile:
             trivia_reader = csv.DictReader(csvfile)
-
             question = ""
             count = -1
             for row in trivia_reader:
