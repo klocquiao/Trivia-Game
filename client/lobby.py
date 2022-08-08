@@ -1,6 +1,8 @@
 # Game Lobby page 
 import pygame, sys
 from player import Player
+from client import start_client
+from client import new_player
 from pygame.locals import *
 
 
@@ -14,6 +16,8 @@ SCREEN_HEIGHT = 500
 BOX_WIDTH = 230     # text input box
 BOX_HEIGHT = 25     # text input box
 display_lobby = True
+at_lobby_page = True
+
 lobby_page = 1
 
 pygame.init()
@@ -73,12 +77,12 @@ while run and display_lobby:
                 if len(user_input) == 0:
                     show_warning = True
                 else: 
+                    #======== starts client socket and pass player data ======
+                    start_client()
                     player = Player(user_input)
-                    # print("---- save player name: ", player.get_name()) 
-                    # # ======= pass player name to trivia manager =====
-                    lobby_page += 1
-                    if lobby_page == 3:
-                        display_lobby = False
+                    new_player(player.get_name())
+
+                    at_lobby_page = False #direct to waiting page
                 
                 button_active = False
 
@@ -108,7 +112,7 @@ while run and display_lobby:
 
     
     # must be with screen.fill in same level, and must be after it
-    if lobby_page == 1:
+    if at_lobby_page:
         # ------ Display Title ------
         title = font_large.render("*** Welcome to Trivia Game ***", True, ORANGE)
         title_center = title.get_rect(center=(SCREEN_WIDTH/2, SCREEN_HEIGHT/4))
@@ -139,8 +143,8 @@ while run and display_lobby:
             screen.blit(warning, [input_box.x + input_box.width + 10, input_box.y])
 
 
-# =========== Only for tesing ready button, will delete later ========== 
-    if lobby_page == 2:
+# ================== Waiting Page ==================
+    if at_lobby_page == False:
         title = font_large.render("*** Please wait here for other players connected. ***", True, ORANGE)
         title_center = title.get_rect(center=(SCREEN_WIDTH/2, SCREEN_HEIGHT/4))
         screen.blit(title, title_center)
