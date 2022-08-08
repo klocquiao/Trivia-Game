@@ -78,8 +78,8 @@ while run and display_lobby:
                     show_warning = True
                 else: 
                     #======== starts client socket and pass player data ======
-                    start_client()
                     player = Player(user_input)
+                    start_client()
                     new_player(player.get_name())
 
                     at_lobby_page = False #direct to waiting page
