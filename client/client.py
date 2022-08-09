@@ -23,6 +23,14 @@ def new_player(pname):
     global player_name
     player_name = pname
 
+def set_winner_name(winner_token):
+    global winner_name
+    winner_name = winner_token
+
+# pass to game-over page:
+def get_winner_name():
+    return winner_name
+
 def handle_message(data):
     message = json.loads(data)
     if message["token"] == "Name":
@@ -32,8 +40,9 @@ def handle_message(data):
 
     elif message["token"] == "Result":
         print("---- Get winner:", message["winner"])
-        # game-over page get winner's name
-    
+        # set_winner_name(message["winner"])
+        set_winner_name("Winner_tester")   #remove this-------
+
 
 # To be binded by front-end team members
 def send_message(message):

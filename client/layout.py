@@ -4,7 +4,7 @@ from pygame.locals import *
 # sys.path.append('.')
 # sys.path.append('../server/model')
 import player
-
+from game_over import open_game_over
 
 FPS = 30 # frames per second, the general speed of the program
 WINDOW_WIDTH = 700 # size of window's width in pixels
@@ -100,6 +100,8 @@ def main():
                 if counter == 0: # If time out then reset layout 
                     pygame.time.set_timer(time_event, 0) # Stop the timer
                     turn += 1
+
+                    # open_game_over()    # once winner is ready -------- still under testing
 
         boxx, boxy = get_box_at_pixel(mousex, mousey) # Column, row of answer_board. Index is from 0
         if boxx != None and boxy != None: # If user touch answer box inside answer_board
