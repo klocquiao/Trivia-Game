@@ -33,7 +33,7 @@ class Game:
 
             self.rounds += 1
 
-        winner = self.players.get_winner()
+        winner = self.player_manager.get_winner()
         print("The winner is " + winner.get_name())
 
         broadcast_message({"token" : "Result", "winner": winner.get_name()})
