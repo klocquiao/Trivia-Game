@@ -1,3 +1,4 @@
+# game.py
 from .trivia_manager import TriviaManager
 from .round import Round
 from .player_manager import PlayerManager
@@ -38,3 +39,4 @@ class Game:
 
         broadcast_message({"token" : "Result", "winner": winner.get_name()})
         close_server()
+

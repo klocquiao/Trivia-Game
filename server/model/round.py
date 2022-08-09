@@ -1,3 +1,5 @@
+# Round.py
+
 from .trivia import Trivia
 from .server import broadcast_message, send_message, start_server
 import threading
@@ -24,6 +26,7 @@ class Round:
     def check_player_answer(self, message):
         # Need mutexes here
         player_choice = message["answer"]
+        print("Received player choice", player_choice)
         player = self.players.find_player(message["name"])
         
         # Player was able to access shared object
