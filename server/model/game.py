@@ -25,7 +25,9 @@ class Game:
             time.sleep(3)
 
             trivia = self.trivia_set.pop()
-            broadcast_message({"token" : "Round", "number": self.rounds, "question" : trivia.get_question(), "answers": trivia.get_answers_str()})
+            broadcast_message({"token" : "Question", "Round": self.rounds, "question" : trivia.get_question()})
+            broadcast_message({"token" : "Answers", "number": self.rounds, "answers": trivia.get_answers_str()})
+
             print("Round " + str(self.rounds))
 
             self.current_round = Round(trivia, self.player_manager)
