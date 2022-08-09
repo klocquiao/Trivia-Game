@@ -30,6 +30,11 @@ def handle_message(data):
         tm = {"token": "Name", "name": player_name}
         send_message(tm)
 
+    elif message["token"] == "Result":
+        print("---- Get winner:", message["winner"])
+        # game-over page get winner's name
+    
+
 # To be binded by front-end team members
 def send_message(message):
     data = json.dumps(message)
