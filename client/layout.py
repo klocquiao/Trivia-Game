@@ -1,10 +1,9 @@
 import pygame, sys
 from pygame.locals import *
-
 # sys.path.append('.')
 # sys.path.append('../server/model')
 import player
-from client import get_player_list, get_question, get_answers, send_message
+from client import get_player_list, get_question, get_answers, send_message, get_player_name
 
 
 FPS = 30 # frames per second, the general speed of the program
@@ -70,7 +69,7 @@ def main():
     turn = 1
 
     # Declare player list
-    # player_list = generate_player_list()
+    player_name = get_player_name()
     player_list = get_player_list()
     ALL_ANSWERS = get_answers()
     QUESTION = get_question()
@@ -112,20 +111,16 @@ def main():
                 is_pressed_answer_boxes[boxx][boxy] = True
                 answer_index = change_2DAnswer_to_1D(boxx, boxy)
                 print("Answer index: ", answer_index)
-                send_message({"token" : "Answer", "answer" : answer_index, "name" : 'AA'})
+                send_message({"token" : "Answer", "answer" : answer_index, "name" : player_name})
                 # player_list[0].increment_score()
        
         # Redraw the screen and wait a clock tick.
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
-def generate_player_list():
-    player1 = player.Player('Player 1')
-    player2 = player.Player('Player 2')
-    player3 = player.Player('Player 3')
-    player4 = player.Player('Player 4')
-    player_list = [player1, player2, player3, player4]
-    return player_list
+
+def unlock_button_press():
+    pygame.event.set_allowed(pygame.MOUSEBUTTONDOWN)
 
 def change_2DAnswer_to_1D(boxx, boxy):
     return TOTAL_ROWS*boxy + boxx + 1
@@ -184,8 +179,7 @@ def draw_answer_board(board, pressed, counter, turn, player_list, QUESTION):
     left = XMARGIN
     top = 30
     for index, player in enumerate(player_list):
-        # player_score_str = player_list[index].get_name() + ': '+ str(player.get_score())
-        player_score_str = player_list[index] + ': '
+        player_score_str = player.get_name() + ': ' + str(player.get_score())
         display_text(player_score_str, 20, WHITE, (left, 30, BOX_WIDTH, BOX_HEIGHT))
         left += (GAP_SIZE + BOX_WIDTH)
 
