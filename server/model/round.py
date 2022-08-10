@@ -3,7 +3,7 @@
 from .trivia import Trivia
 from .server import broadcast_message, send_message, start_server
 import threading
-
+import time 
 NUMBER_OF_TURNS = 3
 
 class Round:
@@ -15,13 +15,15 @@ class Round:
 
     def start(self):
         while self.turns <= NUMBER_OF_TURNS:
-            print("Turn " + str(self.turns))
+            print("Starting turn " + str(self.turns))
+
             broadcast_message({"token" : "Turn", "number" : self.turns})
             self.round_event.wait()
 
             self.turns += 1
             self.round_event.clear()
-    
+            time.sleep(3)
+
     def check_player_answer(self, message):
         # Need mutexes here
         player_choice = int(message["answer"])
@@ -44,7 +46,6 @@ class Round:
         else:
             print(player.get_name() + " failed race condition for " + str(self.trivia.get_answer(player_choice)))
             send_message(player, {"token": "Locked"})
-
 
         if self.players.is_players_ready():
             self.players.reset_players_state()

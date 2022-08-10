@@ -68,7 +68,7 @@ def main():
     # Handle turn
 
     # Declare player list
-    turn = client.get_turn()
+    turn = 1
     player_name = client.get_player_name()
     player_list = client.get_player_list()
     ALL_ANSWERS = client.get_answers()
@@ -112,12 +112,10 @@ def main():
                 print("Answer index: ", answer_index)
                 client.send_message({"token" : "Answer", "answer" : answer_index, "name" : player_name})
                 pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
-
        
         # Redraw the screen and wait a clock tick.
         pygame.display.update()
         FPSCLOCK.tick(FPS)
-
 
 def lock_answer(index):
     print("temporary lock!")
@@ -235,6 +233,5 @@ def display_text (string, font_size, font_color, position):
     text_value = font.render(string, True, font_color)
     DISPLAYSURF.blit(text_value, (text_rect.x, text_rect.y))
 
-    
 if __name__ == '__main__':
     main()

@@ -43,7 +43,6 @@ def handle_message(data):
         answers = message["answers"]
 
     elif message["token"] == "Turn":
-        current_turn = int(message["number"])
         layout.unlock_button_press()
 
     elif message["token"] == "Player":
@@ -99,8 +98,5 @@ def get_question():
 
 def get_answers():
     return answers
-
-def get_turn():
-    return current_turn
 
 
