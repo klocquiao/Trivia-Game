@@ -4,7 +4,7 @@ import json
 from threading import Thread
 from .player import Player
 
-HOST = "207.23.183.211"
+HOST = "127.0.0.1"
 PORT = 12345
 
 NUMBER_OF_CLIENTS = 4

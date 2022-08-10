@@ -2,7 +2,7 @@ import socket
 from threading import Thread
 import json 
 
-HOST = "207.23.183.211"
+HOST = "127.0.0.1"
 PORT = 12345
 MAX_MESSAGE_SIZE = 4096 
 
