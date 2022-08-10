@@ -23,7 +23,7 @@ class Player:
     def increment_score(self):
         self.score += 1
 
-    def is_chosen(self):
+    def get_is_chosen(self):
         return self.is_chosen
 
     def set_score(self, newScore):

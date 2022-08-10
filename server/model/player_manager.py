@@ -36,7 +36,7 @@ class PlayerManager:
 
     def is_players_ready(self):
         for player in self.players:
-            if not player.is_chosen():
+            if not player.get_is_chosen():
                 return False
         
         return True

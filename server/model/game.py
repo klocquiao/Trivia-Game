@@ -26,6 +26,7 @@ class Game:
             time.sleep(3)
 
             trivia = self.trivia_set.pop()
+            trivia.shuffle_answers()
             broadcast_message({"token" : "Round", "number": self.rounds, "question" : trivia.get_question(), "answers": trivia.get_answers_str()})
             print("Round " + str(self.rounds))
 

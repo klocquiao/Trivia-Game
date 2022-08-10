@@ -2,12 +2,15 @@ import socket
 from threading import Thread
 import json 
 from player import Player
+import layout
+
 HOST = "127.0.0.1"
 PORT = 12345
 MAX_MESSAGE_SIZE = 4096 
 
 my_socket = None
 is_layout_ready = False
+current_turn = 0
 player_list = []
 question = []
 answers = []
@@ -24,24 +27,36 @@ def receiver_runner():
             break
 
 def handle_message(data):
-    global player_list, question, answers, is_layout_ready
+    global player_list, question, answers, is_layout_ready, current_turn
     message = json.loads(data)
     print("Data receive: ", message)
     if message["token"] == "Name":
         tm = {"token": "Name", "name": player_name}
         send_message(tm)
+
     elif message["token"] == "Players":
         player_list = list(map(lambda x: Player(x), message["players"]))
+
     elif message["token"] == "Round":
         is_layout_ready = True
         question = message["question"]
         answers = message["answers"]
+
+    elif message["token"] == "Turn":
+        current_turn = int(message["number"])
+        layout.unlock_button_press()
+
     elif message["token"] == "Player":
-        update_player_list(message["name"] ,message["score"])
+        print("Receive answer")
+        update_player_list(message["name"], int(message["score"]))
+        layout.draw_player_list(player_list)
+
     elif message["token"] == "Lock":
-        unlock_button_press()
+        print("Receive lock")
+        layout.lock_answer(message["answer"])
+
     elif message["token"] == "Locked":
-        lock_answer(message["answer"])
+        layout.unlock_button_press()
 
 # To be binded by front-end team members
 def send_message(message):
@@ -84,5 +99,8 @@ def get_question():
 
 def get_answers():
     return answers
+
+def get_turn():
+    return current_turn
 
 
