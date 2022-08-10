@@ -4,7 +4,7 @@ import json
 from threading import Thread
 from .player import Player
 
-HOST = "127.0.0.1"
+HOST = "207.23.183.211"
 PORT = 12345
 
 NUMBER_OF_CLIENTS = 4
@@ -18,8 +18,8 @@ def receiver_runner(client):
         try:
             data = client.recv(MAX_MESSAGE_SIZE).decode("utf-8")
             handle_message(data)
-        except:
-            print("Client " + client.get_name() + " has crashed! Exiting game...")
+        except socket.error as e: 
+            print("Client crashed! Exiting game...")
             my_socket.close()
             break
 
@@ -46,7 +46,7 @@ def find_players():
             receiver_thread = Thread(target=receiver_runner, args=(client,))
             receiver_thread.start()
 
-        except:
+        except socket.error as e: 
             print("An error has occured when handling new client!")
 
 def handle_message(data):

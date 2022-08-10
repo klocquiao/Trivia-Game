@@ -28,6 +28,7 @@ class Round:
         player_choice = message["answer"]
         print("Received player choice", player_choice)
         player = self.players.find_player(message["name"])
+        print("player_name: ", player)
         
         # Player was able to access shared object
         if (self.trivia.get_answer(player_choice).check_usage()):
