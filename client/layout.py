@@ -4,6 +4,7 @@ from pygame.locals import *
 # sys.path.append('.')
 # sys.path.append('../server/model')
 import player
+from client import get_player_list, get_question, get_answers, send_message
 
 
 FPS = 30 # frames per second, the general speed of the program
@@ -38,12 +39,12 @@ HIGHLIGHT_COLOR = BLUE
 RIGHT_ANSWER_COLOR = GREY
 
 # TEST DATA 
-QUESTION = "Which of the following are fruit?"
-ALL_ANSWERS = ('Pear', 'Apple', 'Mango', 'Peach',
-            'Cherry', 'Durian', 'Orange', 'Lime',
-            'Tomato', 'Pepper', 'Coconut', 'Pumpkin',
-            'Eggplant', 'Cucumber', 'Avocado', 'Olive'
-            )
+# QUESTION = "Which of the following are fruit?"
+# ALL_ANSWERS = ('Pear', 'Apple', 'Mango', 'Peach',
+#             'Cherry', 'Durian', 'Orange', 'Lime',
+#             'Tomato', 'Pepper', 'Coconut', 'Pumpkin',
+#             'Eggplant', 'Cucumber', 'Avocado', 'Olive'
+#             )
 # RIGHT_ANSWERS = ('Pear', 'Apple', 'Mango')
 
 
@@ -57,9 +58,6 @@ def main():
     mousex = 0 # used to store x coordinate of mouse event
     mousey = 0 # used to store y coordinate of mouse event
 
-    main_answer_board = generate_answer_board()
-    is_pressed_answer_boxes = generate_is_pressed_answer(False)
-
     DISPLAYSURF.fill(BG_COLOR)
 
     # Handle time
@@ -72,13 +70,18 @@ def main():
     turn = 1
 
     # Declare player list
-    player_list = generate_player_list()
+    # player_list = generate_player_list()
+    player_list = get_player_list()
+    ALL_ANSWERS = get_answers()
+    QUESTION = get_question()
+    main_answer_board = generate_answer_board(ALL_ANSWERS)
+    is_pressed_answer_boxes = generate_is_pressed_answer(False)
 
     while True: # main game loop
         mouse_pressed = False
 
         DISPLAYSURF.fill(BG_COLOR) # drawing the window
-        draw_answer_board(main_answer_board, is_pressed_answer_boxes, counter, turn, player_list)
+        draw_answer_board(main_answer_board, is_pressed_answer_boxes, counter, turn, player_list, QUESTION)
 
         pygame.event.set_allowed(pygame.MOUSEBUTTONDOWN)
 
@@ -107,7 +110,10 @@ def main():
                 draw_highlight_box(boxx, boxy)
             if not is_pressed_answer_boxes[boxx][boxy] and mouse_pressed: # When user pressed and choose correct answer
                 is_pressed_answer_boxes[boxx][boxy] = True
-                player_list[0].increment_score()
+                answer_index = change_2DAnswer_to_1D(boxx, boxy)
+                print("Answer index: ", answer_index)
+                send_message({"token" : "Answer", "answer" : answer_index, "name" : 'AA'})
+                # player_list[0].increment_score()
        
         # Redraw the screen and wait a clock tick.
         pygame.display.update()
@@ -121,7 +127,10 @@ def generate_player_list():
     player_list = [player1, player2, player3, player4]
     return player_list
 
-def generate_answer_board():
+def change_2DAnswer_to_1D(boxx, boxy):
+    return TOTAL_ROWS*boxy + boxx + 1
+
+def generate_answer_board(ALL_ANSWERS):
     # Create the board data structure, with answer options
     board = []
     answer = list(ALL_ANSWERS) # Copy all answer options
@@ -140,7 +149,7 @@ def generate_is_pressed_answer(val):
         is_pressed_answer_boxes.append([val] * TOTAL_ROWS)
     return is_pressed_answer_boxes
 
-def draw_answer_board(board, pressed, counter, turn, player_list):
+def draw_answer_board(board, pressed, counter, turn, player_list, QUESTION):
     font = pygame.font.Font(None, 20)
     # Display question text
     display_textbox_horizontal(QUESTION, 20, WHITE, 80)
@@ -175,7 +184,8 @@ def draw_answer_board(board, pressed, counter, turn, player_list):
     left = XMARGIN
     top = 30
     for index, player in enumerate(player_list):
-        player_score_str = player_list[index].get_name() + ': '+ str(player.get_score())
+        # player_score_str = player_list[index].get_name() + ': '+ str(player.get_score())
+        player_score_str = player_list[index] + ': '
         display_text(player_score_str, 20, WHITE, (left, 30, BOX_WIDTH, BOX_HEIGHT))
         left += (GAP_SIZE + BOX_WIDTH)
 
