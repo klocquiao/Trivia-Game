@@ -18,7 +18,7 @@ def receiver_runner(client):
             data = client.recv(MAX_MESSAGE_SIZE).decode("utf-8")
             handle_message(data)
         except:
-            print("Client " + client.get_name() + " has crashed! Exiting game...")
+            print("A client has disconnected! Exiting game...")
             my_socket.close()
             break
 
