@@ -48,27 +48,15 @@ def main():
 
     DISPLAYSURF.fill(BG_COLOR)
 
-    # Handle time
-    counter = 10 # Set default time out to 10
-    time_delay = 1000 # 1000 = 1s
-    time_event = pygame.USEREVENT+1
-    pygame.time.set_timer(time_event, time_delay)
-
-    # Handle turn
-
     # Get info from server
     player_name = client.get_player_name()
-    player_list = client.get_player_list()
-    ALL_ANSWERS = client.get_answers()
-    QUESTION = client.get_question()
-    main_answer_board = generate_answer_board(client.answers)
     is_pressed_answer_boxes = generate_is_pressed_answer(False)
 
     while True: # main game loop
         mouse_pressed = False
 
         DISPLAYSURF.fill(BG_COLOR) # drawing the window
-        draw_answer_board(generate_answer_board(client.answers), is_pressed_answer_boxes, counter, client.current_turn, client.player_list, client.question)
+        draw_answer_board(generate_answer_board(client.answers), is_pressed_answer_boxes, client.current_turn, client.player_list, client.question)
 
         for event in pygame.event.get(): # event handling loop
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
@@ -77,10 +65,6 @@ def main():
             elif event.type == MOUSEMOTION:
                 mousex, mousey = event.pos
             elif event.type == MOUSEBUTTONDOWN:
-                if counter == 0:
-                    pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
-                    pygame.time.set_timer(time_event, time_delay)
-                    counter = 10
                 mousex, mousey = event.pos
                 mouse_pressed = True
 
@@ -136,20 +120,11 @@ def reset_pressed_answers():
     global is_pressed_answer_boxes
     is_pressed_answer_boxes = generate_is_pressed_answer(False)
 
-def draw_answer_board(board, pressed, counter, current_turn, player_list, QUESTION):
+def draw_answer_board(board, pressed, current_turn, player_list, QUESTION):
     global main_answer_board, others_player_answers
     font = pygame.font.Font(None, 20)
     # Display question text
     display_textbox_horizontal(QUESTION, 20, WHITE, 80)
-
-    # Display time button
-    # Change time format to second
-    counter = str(counter)
-    if (counter == '10'): 
-        counter = '00:' + counter
-    else: 
-        counter = '00:0' + counter
-    display_text(counter, 20, WHITE, (WINDOW_WIDTH - XMARGIN - BOX_WIDTH, 400, BOX_WIDTH, BOX_HEIGHT))
 
     # Display turn button
     turn = 'Turn: ' + str(current_turn)
@@ -170,19 +145,15 @@ def draw_answer_board(board, pressed, counter, current_turn, player_list, QUESTI
     
     # Draw player list
     left = XMARGIN
-    top = 30
+    top = 40
     for index, player in enumerate(player_list):
         player_score_str = player.get_name() + ': ' + str(player.get_score())
         display_text(player_score_str, 20, WHITE, (left, 30, BOX_WIDTH, BOX_HEIGHT))
         left += (GAP_SIZE + BOX_WIDTH)
 
 
-def draw_turn(turn):
-    turn = 'Turn: ' + str(turn)
-    display_text(turn, 20, WHITE, (XMARGIN, 400, BOX_WIDTH, BOX_HEIGHT))
-
 def left_top_coords_of_box(boxx, boxy):
-    # Convert board coordinates to pixel coordinates
+    # Convert board coordinates to pisxel coordinates
     left = boxx * (BOX_WIDTH + GAP_SIZE) + XMARGIN
     top = boxy * (BOX_HEIGHT + GAP_SIZE) + YMARGIN
     return (left, top)
