@@ -15,6 +15,7 @@ class Round:
 
     def start(self):
         while self.turns <= NUMBER_OF_TURNS:
+            time.sleep(3)
             print("Starting turn " + str(self.turns))
 
             broadcast_message({"token" : "Turn", "number" : self.turns})
@@ -22,7 +23,6 @@ class Round:
 
             self.turns += 1
             self.round_event.clear()
-            time.sleep(3)
 
     def check_player_answer(self, message):
         # Need mutexes here
