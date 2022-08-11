@@ -4,6 +4,8 @@ from player import Player
 from client import start_client
 from client import new_player
 from pygame.locals import *
+from client import is_enough_player
+from layout import main
 
 
 # --------- Lobby page setup ---------
@@ -81,8 +83,10 @@ while run and display_lobby:
                     player = Player(user_input)
                     new_player(player.get_name())
                     start_client()
-
-                    at_lobby_page = False #direct to waiting page
+                    if (is_enough_player()):
+                        main()
+                    else: 
+                        at_lobby_page = False #direct to waiting page
                 
                 button_active = False
 
@@ -148,12 +152,15 @@ while run and display_lobby:
         title = font_large.render("*** Please wait here for other players connected. ***", True, ORANGE)
         title_center = title.get_rect(center=(SCREEN_WIDTH/2, SCREEN_HEIGHT/4))
         screen.blit(title, title_center)
+        if (is_enough_player()):
+            main()
 
 
     # update game state
     pygame.display.update()
     
     clock.tick(frame_rate)
+
 
 
 

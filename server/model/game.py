@@ -1,3 +1,4 @@
+# game.py
 from .trivia_manager import TriviaManager
 from .round import Round
 from .player_manager import PlayerManager
@@ -21,17 +22,23 @@ class Game:
         # Broadcast finalized player array
         broadcast_message({"token": "Players", "players": self.player_manager.get_players_str()})
         
-        # while (len(self.trivia_set) > 0):
-        #     time.sleep(3)
+        while (len(self.trivia_set) > 0):
+            time.sleep(3)
 
-        #     trivia = self.trivia_set.pop()
-        #     broadcast_message({"token" : "Round", "number": self.rounds, "question" : trivia.get_question(), "answers": trivia.get_answers_str()})
-        #     print("Round " + str(self.rounds))
+            trivia = self.trivia_set.pop()
+            broadcast_message({"token" : "Round", "number": self.rounds, "question" : trivia.get_question(), "answers": trivia.get_answers_str()})
+            print("Round " + str(self.rounds))
+            trivia = self.trivia_set.pop()
+            trivia.shuffle_answers()
+            broadcast_message({"token" : "Round", "number": self.rounds, "question" : trivia.get_question(), "answers": trivia.get_answers_str()})
+            print("Round " + str(self.rounds))
 
-        #     self.current_round = Round(trivia, self.player_manager)
-        #     self.current_round.start()
+            self.current_round = Round(trivia, self.player_manager)
+            self.current_round.start()
 
-        #     self.rounds += 1
+            self.rounds += 1
+            self.rounds += 1
+            print("Starting next round in 3 seconds")
 
         winner = self.player_manager.get_winner()
         print("The winner is " + winner.get_name())
@@ -39,3 +46,4 @@ class Game:
         broadcast_message({"token" : "Result", "winner": winner.get_name()})
 
         close_server()
+

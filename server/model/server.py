@@ -1,3 +1,4 @@
+# Server.py
 import socket
 import json 
 from threading import Thread
@@ -45,12 +46,13 @@ def find_players():
             receiver_thread = Thread(target=receiver_runner, args=(client,))
             receiver_thread.start()
 
-        except:
+        except socket.error as e: 
             print("An error has occured when handling new client!")
 
 def handle_message(data):
     message = json.loads(data)
     if message["token"] == "Answer":
+        print("Answer message receive")
         game.current_round.check_player_answer(message)
 
 def broadcast_message(message):
@@ -76,3 +78,4 @@ def start_server(new_game):
 
 def close_server():
     my_socket.close()
+
