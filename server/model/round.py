@@ -34,14 +34,12 @@ class Round:
         # Player was able to access shared object
         if (self.trivia.get_answer(player_choice).check_available()):
             player.set_is_chosen(True)
-            print("Broadcasting lock for answer " + str(self.trivia.get_answer(player_choice)))
-            broadcast_message({"token": "Lock", "answer": player_choice})
 
             if (self.trivia.get_answer(player_choice).check_is_correct()):
                 player.increment_score()
 
             print(player.get_name() + " obtained answer " + str(self.trivia.get_answer(player_choice)))
-            broadcast_message({"token": "Player", "name": player.get_name(), "score": player.get_score()})
+            broadcast_message({"token": "Player", "answer": player_choice, "name": player.get_name(), "score": player.get_score()})
 
         else:
             print(player.get_name() + " failed race condition for " + str(self.trivia.get_answer(player_choice)))

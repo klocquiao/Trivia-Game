@@ -52,9 +52,6 @@ def handle_message(data):
     elif message["token"] == "Player":
         print("Receive answer")
         update_player_list(message["name"], int(message["score"]))
-
-    elif message["token"] == "Lock":
-        print("Receive lock")
         layout.lock_answer(message["answer"])
 
     elif message["token"] == "Locked":
