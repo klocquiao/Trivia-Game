@@ -15,7 +15,7 @@ class Round:
 
     def start(self):
         while self.turns <= NUMBER_OF_TURNS:
-            time.sleep(3)
+            time.sleep(2)
             print("Starting turn " + str(self.turns))
 
             broadcast_message({"token" : "Turn", "number" : self.turns})

@@ -40,6 +40,7 @@ def handle_message(data):
 
     elif message["token"] == "Round":
         is_layout_ready = True
+        current_turn = 0
         round = message["number"]
         question = message["question"]
         answers = message["answers"]
