@@ -11,7 +11,7 @@ MAX_MESSAGE_SIZE = 4096
 
 my_socket = None
 is_layout_ready = False
-current_turn = 1
+current_turn = 0
 player_list = []
 question = []
 answers = []

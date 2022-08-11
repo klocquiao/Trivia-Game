@@ -39,6 +39,7 @@ is_pressed_answer_boxes = []
 def main():
     global FPSCLOCK, DISPLAYSURF, is_pressed_answer_boxes
     pygame.init()
+    
     FPSCLOCK = pygame.time.Clock()
     DISPLAYSURF = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
     pygame.display.set_caption('CMPT371 Project')
@@ -51,6 +52,8 @@ def main():
     # Get info from server
     player_name = client.get_player_name()
     is_pressed_answer_boxes = generate_is_pressed_answer(False)
+
+    pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
 
     while True: # main game loop
         mouse_pressed = False
