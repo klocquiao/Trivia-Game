@@ -1,8 +1,9 @@
 import pygame, sys
 from pygame.locals import *
 import player
-from game_over import open_game_over
+# from game_over import open_game_over 
 import client
+import game_over
 
 FPS = 30 # frames per second, the general speed of the program
 WINDOW_WIDTH = 700 # size of window's width in pixels
@@ -42,7 +43,7 @@ def main():
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
     DISPLAYSURF = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-    pygame.display.set_caption('CMPT371 Project')
+    pygame.display.set_caption('*** Trivia Game ***')
 
     mousex = 0 # used to store x coordinate of mouse event
     mousey = 0 # used to store y coordinate of mouse event
@@ -53,34 +54,42 @@ def main():
     player_name = client.get_player_name()
     is_pressed_answer_boxes = generate_is_pressed_answer(False)
 
+    # pygame.display.set_caption(f'*** Trivia Game *** Player: {player_name}')
+
     while True: # main game loop
-        mouse_pressed = False
+        print("----- has winner: ", client.has_the_winner())
+        if client.has_the_winner() == False:
+            mouse_pressed = False
 
-        DISPLAYSURF.fill(BG_COLOR) # drawing the window
-        draw_answer_board(generate_answer_board(client.answers), is_pressed_answer_boxes, client.current_turn, client.player_list, client.question)
+            DISPLAYSURF.fill(BG_COLOR) # drawing the window
+            draw_answer_board(generate_answer_board(client.answers), is_pressed_answer_boxes, client.current_turn, client.player_list, client.question)
 
-        for event in pygame.event.get(): # event handling loop
-            if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
-                pygame.quit()
-                sys.exit()
-            elif event.type == MOUSEMOTION:
-                mousex, mousey = event.pos
-            elif event.type == MOUSEBUTTONDOWN:
-                mousex, mousey = event.pos
-                mouse_pressed = True
+            for event in pygame.event.get(): # event handling loop
+                if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == MOUSEMOTION:
+                    mousex, mousey = event.pos
+                elif event.type == MOUSEBUTTONDOWN:
+                    mousex, mousey = event.pos
+                    mouse_pressed = True
 
-                    # open_game_over()    # once winner is ready -------- still under testing
+                        # open_game_over()    # once winner is ready -------- still under testing
 
-        boxx, boxy = get_box_at_pixel(mousex, mousey) # Column, row of answer_board. Index is from 0
-        if boxx != None and boxy != None: # If user touch answer box inside answer_board
-            if not is_pressed_answer_boxes[boxx][boxy]: # If user only touch, not pressed
-                draw_highlight_box(boxx, boxy)
-            if not is_pressed_answer_boxes[boxx][boxy] and mouse_pressed: # When user pressed and choose correct answer
-                is_pressed_answer_boxes[boxx][boxy] = True
-                answer_index = change_2DAnswer_to_1D(boxx, boxy)
-                client.send_message({"token" : "Answer", "answer" : answer_index, "name" : player_name})
-                pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
+            boxx, boxy = get_box_at_pixel(mousex, mousey) # Column, row of answer_board. Index is from 0
+            if boxx != None and boxy != None: # If user touch answer box inside answer_board
+                if not is_pressed_answer_boxes[boxx][boxy]: # If user only touch, not pressed
+                    draw_highlight_box(boxx, boxy)
+                if not is_pressed_answer_boxes[boxx][boxy] and mouse_pressed: # When user pressed and choose correct answer
+                    is_pressed_answer_boxes[boxx][boxy] = True
+                    answer_index = change_2DAnswer_to_1D(boxx, boxy)
+                    client.send_message({"token" : "Answer", "answer" : answer_index, "name" : player_name})
+                    pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
        
+        
+        if client.has_the_winner() == True:
+            game_over.open_game_over()
+        
         # Redraw the screen and wait a clock tick.
         pygame.display.update()
         FPSCLOCK.tick(FPS)

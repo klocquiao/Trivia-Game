@@ -1,6 +1,7 @@
 # Game over
 import pygame, sys
-from client import get_winner_name
+# from client import get_winner_name
+import client
 from pygame.locals import *
 
 # --------- page setup ---------
@@ -36,7 +37,7 @@ def open_game_over():
 
         screen.fill(NAVYBLUE) 
         # ----------- Display Winner -----------
-        winner_param = get_winner_name()
+        winner_param = client.get_winner_name()
         title = font_large.render(f"*** {winner_param} Won! ***", True, ORANGE)
         title_center = title.get_rect(center=(SCREEN_WIDTH/2, SCREEN_HEIGHT/4))
         screen.blit(title, title_center)
@@ -46,7 +47,4 @@ def open_game_over():
         game_over_text_center = game_over_text.get_rect(center=(SCREEN_WIDTH/2, SCREEN_HEIGHT/2))
         screen.blit(game_over_text, game_over_text_center)
 
-        
-
-if __name__ == '__main__':
-    open_game_over()
+    
