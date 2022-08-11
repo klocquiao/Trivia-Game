@@ -60,7 +60,6 @@ def main():
     # Get info from server
     player_name = client.get_player_name()
     player_list = client.get_player_list()
-    current_turn = client.get_turn()
     ALL_ANSWERS = client.get_answers()
     QUESTION = client.get_question()
     main_answer_board = generate_answer_board(ALL_ANSWERS)
@@ -70,7 +69,7 @@ def main():
         mouse_pressed = False
 
         DISPLAYSURF.fill(BG_COLOR) # drawing the window
-        draw_answer_board(main_answer_board, is_pressed_answer_boxes, counter, current_turn, player_list, QUESTION)
+        draw_answer_board(main_answer_board, is_pressed_answer_boxes, counter, client.current_turn, player_list, QUESTION)
 
 
         for event in pygame.event.get(): # event handling loop
@@ -107,7 +106,6 @@ def main():
         FPSCLOCK.tick(FPS)
 
 def lock_answer(index):
-    print("temporary lock!")
     global others_player_answers, main_answer_board
     boxx, boxy = change_1DAnswer_to_2D(index)
     others_player_answers.append(main_answer_board[boxy][boxx])
@@ -185,14 +183,10 @@ def draw_answer_board(board, pressed, counter, current_turn, player_list, QUESTI
         display_text(player_score_str, 20, WHITE, (left, 30, BOX_WIDTH, BOX_HEIGHT))
         left += (GAP_SIZE + BOX_WIDTH)
 
-def draw_player_list(player_list):
-        # Draw player list
-    left = XMARGIN
-    top = 30
-    for index, player in enumerate(player_list):
-        player_score_str = player.get_name() + ': ' + str(player.get_score())
-        display_text(player_score_str, 20, WHITE, (left, 30, BOX_WIDTH, BOX_HEIGHT))
-        left += (GAP_SIZE + BOX_WIDTH)
+
+def draw_turn(turn):
+    turn = 'Turn: ' + str(turn)
+    display_text(turn, 20, WHITE, (XMARGIN, 400, BOX_WIDTH, BOX_HEIGHT))
 
 def left_top_coords_of_box(boxx, boxy):
     # Convert board coordinates to pixel coordinates

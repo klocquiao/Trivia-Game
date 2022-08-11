@@ -3,6 +3,7 @@ from threading import Thread
 import json 
 from player import Player
 import layout
+import time 
 
 HOST = "127.0.0.1"
 PORT = 12345
@@ -10,7 +11,7 @@ MAX_MESSAGE_SIZE = 4096
 
 my_socket = None
 is_layout_ready = False
-current_turn = 0
+current_turn = 1
 player_list = []
 question = []
 answers = []
@@ -44,13 +45,12 @@ def handle_message(data):
         answers = message["answers"]
 
     elif message["token"] == "Turn":
-        current_turn = message["number"]
         layout.unlock_button_press()
+        current_turn = int(message["number"])
 
     elif message["token"] == "Player":
         print("Receive answer")
         update_player_list(message["name"], int(message["score"]))
-        layout.draw_player_list(player_list)
 
     elif message["token"] == "Lock":
         print("Receive lock")
