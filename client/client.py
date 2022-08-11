@@ -14,7 +14,7 @@ current_turn = 0
 player_list = []
 question = []
 answers = []
-is_lock = ""
+round = 1
 
 def receiver_runner():
     while True:
@@ -27,7 +27,7 @@ def receiver_runner():
             break
 
 def handle_message(data):
-    global player_list, question, answers, is_layout_ready, current_turn
+    global player_list, question, answers, is_layout_ready, current_turn, round
     message = json.loads(data)
     print("Data receive: ", message)
     if message["token"] == "Name":
@@ -39,10 +39,12 @@ def handle_message(data):
 
     elif message["token"] == "Round":
         is_layout_ready = True
+        round = message["number"]
         question = message["question"]
         answers = message["answers"]
 
     elif message["token"] == "Turn":
+        current_turn = message["number"]
         layout.unlock_button_press()
 
     elif message["token"] == "Player":
@@ -99,4 +101,9 @@ def get_question():
 def get_answers():
     return answers
 
+def get_round():
+    return round
+
+def get_turn():
+    return current_turn
 

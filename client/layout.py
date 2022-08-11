@@ -1,8 +1,5 @@
 import pygame, sys
 from pygame.locals import *
-# sys.path.append('.')
-# sys.path.append('../server/model')
-import player
 import client
 
 
@@ -35,20 +32,13 @@ GREY     = (105, 105, 105)
 BG_COLOR = NAVYBLUE
 BOX_COLOR = WHITE
 HIGHLIGHT_COLOR = BLUE
-RIGHT_ANSWER_COLOR = GREY
+CHOSEN_ANSWER = GREY
 
-# TEST DATA 
-# QUESTION = "Which of the following are fruit?"
-# ALL_ANSWERS = ('Pear', 'Apple', 'Mango', 'Peach',
-#             'Cherry', 'Durian', 'Orange', 'Lime',
-#             'Tomato', 'Pepper', 'Coconut', 'Pumpkin',
-#             'Eggplant', 'Cucumber', 'Avocado', 'Olive'
-#             )
-# RIGHT_ANSWERS = ('Pear', 'Apple', 'Mango')
-
+others_player_answers = []
+main_answer_board = None
 
 def main():
-    global FPSCLOCK, DISPLAYSURF
+    global FPSCLOCK, DISPLAYSURF, main_answer_board
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
     DISPLAYSURF = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -67,10 +57,10 @@ def main():
 
     # Handle turn
 
-    # Declare player list
-    turn = 1
+    # Get info from server
     player_name = client.get_player_name()
     player_list = client.get_player_list()
+    current_turn = client.get_turn()
     ALL_ANSWERS = client.get_answers()
     QUESTION = client.get_question()
     main_answer_board = generate_answer_board(ALL_ANSWERS)
@@ -80,7 +70,7 @@ def main():
         mouse_pressed = False
 
         DISPLAYSURF.fill(BG_COLOR) # drawing the window
-        draw_answer_board(main_answer_board, is_pressed_answer_boxes, counter, turn, player_list, QUESTION)
+        draw_answer_board(main_answer_board, is_pressed_answer_boxes, counter, current_turn, player_list, QUESTION)
 
 
         for event in pygame.event.get(): # event handling loop
@@ -109,7 +99,6 @@ def main():
             if not is_pressed_answer_boxes[boxx][boxy] and mouse_pressed: # When user pressed and choose correct answer
                 is_pressed_answer_boxes[boxx][boxy] = True
                 answer_index = change_2DAnswer_to_1D(boxx, boxy)
-                print("Answer index: ", answer_index)
                 client.send_message({"token" : "Answer", "answer" : answer_index, "name" : player_name})
                 pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
        
@@ -119,12 +108,20 @@ def main():
 
 def lock_answer(index):
     print("temporary lock!")
-
+    global others_player_answers, main_answer_board
+    boxx, boxy = change_1DAnswer_to_2D(index)
+    others_player_answers.append(main_answer_board[boxy][boxx])
+    
 def unlock_button_press():
     pygame.event.set_allowed(pygame.MOUSEBUTTONDOWN)
 
 def change_2DAnswer_to_1D(boxx, boxy):
     return TOTAL_ROWS*boxy + boxx
+
+def change_1DAnswer_to_2D(index): 
+    boxx = index % TOTAL_ROWS
+    boxy = index / TOTAL_ROWS
+    return int(boxx), int(boxy)
 
 def generate_answer_board(ALL_ANSWERS):
     # Create the board data structure, with answer options
@@ -145,7 +142,8 @@ def generate_is_pressed_answer(val):
         is_pressed_answer_boxes.append([val] * TOTAL_ROWS)
     return is_pressed_answer_boxes
 
-def draw_answer_board(board, pressed, counter, turn, player_list, QUESTION):
+def draw_answer_board(board, pressed, counter, current_turn, player_list, QUESTION):
+    global main_answer_board, others_player_answers
     font = pygame.font.Font(None, 20)
     # Display question text
     display_textbox_horizontal(QUESTION, 20, WHITE, 80)
@@ -160,7 +158,7 @@ def draw_answer_board(board, pressed, counter, turn, player_list, QUESTION):
     display_text(counter, 20, WHITE, (WINDOW_WIDTH - XMARGIN - BOX_WIDTH, 400, BOX_WIDTH, BOX_HEIGHT))
 
     # Display turn button
-    turn = 'Turn: ' + str(turn)
+    turn = 'Turn: ' + str(current_turn)
     display_text(turn, 20, WHITE, (XMARGIN, 400, BOX_WIDTH, BOX_HEIGHT))
 
     # Draws all of the boxes in their pressed or not pressed state.
@@ -170,8 +168,11 @@ def draw_answer_board(board, pressed, counter, turn, player_list, QUESTION):
             left, top = left_top_coords_of_box(boxx, boxy)
             if not pressed[boxx][boxy]:
                 pygame.draw.rect(DISPLAYSURF, BOX_COLOR, (left, top, BOX_WIDTH, BOX_HEIGHT))
-            else: # Assume pressed = right answer
-                pygame.draw.rect(DISPLAYSURF, RIGHT_ANSWER_COLOR, (left, top, BOX_WIDTH, BOX_HEIGHT))
+            if pressed[boxx][boxy]: # Current player pressed
+                pygame.draw.rect(DISPLAYSURF, CHOSEN_ANSWER, (left, top, BOX_WIDTH, BOX_HEIGHT))
+            if main_answer_board[boxy][boxx] in others_player_answers: # Other player pressed
+                pygame.draw.rect(DISPLAYSURF, CHOSEN_ANSWER, (left, top, BOX_WIDTH, BOX_HEIGHT))
+
 
             answer_text = get_answer_value(board, boxx, boxy)
             draw_answer_text(answer_text, boxx, boxy)
