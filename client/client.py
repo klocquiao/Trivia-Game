@@ -43,6 +43,7 @@ def handle_message(data):
         round = message["number"]
         question = message["question"]
         answers = message["answers"]
+        layout.reset_pressed_answers()
 
     elif message["token"] == "Turn":
         layout.unlock_button_press()
