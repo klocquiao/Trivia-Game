@@ -1,9 +1,6 @@
 import pygame, sys
 from pygame.locals import *
-
-# sys.path.append('.')
-# sys.path.append('../server/model')
-import player
+import client
 
 
 FPS = 30 # frames per second, the general speed of the program
@@ -35,20 +32,12 @@ GREY     = (105, 105, 105)
 BG_COLOR = NAVYBLUE
 BOX_COLOR = WHITE
 HIGHLIGHT_COLOR = BLUE
-RIGHT_ANSWER_COLOR = GREY
+CHOSEN_ANSWER = GREY
 
-# TEST DATA 
-QUESTION = "Which of the following are fruit?"
-ALL_ANSWERS = ('Pear', 'Apple', 'Mango', 'Peach',
-            'Cherry', 'Durian', 'Orange', 'Lime',
-            'Tomato', 'Pepper', 'Coconut', 'Pumpkin',
-            'Eggplant', 'Cucumber', 'Avocado', 'Olive'
-            )
-# RIGHT_ANSWERS = ('Pear', 'Apple', 'Mango')
-
+is_pressed_answer_boxes = []
 
 def main():
-    global FPSCLOCK, DISPLAYSURF
+    global FPSCLOCK, DISPLAYSURF, is_pressed_answer_boxes
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
     DISPLAYSURF = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -57,30 +46,17 @@ def main():
     mousex = 0 # used to store x coordinate of mouse event
     mousey = 0 # used to store y coordinate of mouse event
 
-    main_answer_board = generate_answer_board()
-    is_pressed_answer_boxes = generate_is_pressed_answer(False)
-
     DISPLAYSURF.fill(BG_COLOR)
 
-    # Handle time
-    counter = 10 # Set default time out to 10
-    time_delay = 1000 # 1000 = 1s
-    time_event = pygame.USEREVENT+1
-    pygame.time.set_timer(time_event, time_delay)
-
-    # Handle turn
-    turn = 1
-
-    # Declare player list
-    player_list = generate_player_list()
+    # Get info from server
+    player_name = client.get_player_name()
+    is_pressed_answer_boxes = generate_is_pressed_answer(False)
 
     while True: # main game loop
         mouse_pressed = False
 
         DISPLAYSURF.fill(BG_COLOR) # drawing the window
-        draw_answer_board(main_answer_board, is_pressed_answer_boxes, counter, turn, player_list)
-
-        pygame.event.set_allowed(pygame.MOUSEBUTTONDOWN)
+        draw_answer_board(generate_answer_board(client.answers), is_pressed_answer_boxes, client.current_turn, client.player_list, client.question)
 
         for event in pygame.event.get(): # event handling loop
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
@@ -89,17 +65,8 @@ def main():
             elif event.type == MOUSEMOTION:
                 mousex, mousey = event.pos
             elif event.type == MOUSEBUTTONDOWN:
-                if counter == 0:
-                    pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
-                    pygame.time.set_timer(time_event, time_delay)
-                    counter = 10
                 mousex, mousey = event.pos
                 mouse_pressed = True
-            elif event.type == time_event:
-                counter -= 1
-                if counter == 0: # If time out then reset layout 
-                    pygame.time.set_timer(time_event, 0) # Stop the timer
-                    turn += 1
 
         boxx, boxy = get_box_at_pixel(mousex, mousey) # Column, row of answer_board. Index is from 0
         if boxx != None and boxy != None: # If user touch answer box inside answer_board
@@ -107,21 +74,30 @@ def main():
                 draw_highlight_box(boxx, boxy)
             if not is_pressed_answer_boxes[boxx][boxy] and mouse_pressed: # When user pressed and choose correct answer
                 is_pressed_answer_boxes[boxx][boxy] = True
-                player_list[0].increment_score()
+                answer_index = change_2DAnswer_to_1D(boxx, boxy)
+                client.send_message({"token" : "Answer", "answer" : answer_index, "name" : player_name})
+                pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
        
         # Redraw the screen and wait a clock tick.
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
-def generate_player_list():
-    player1 = player.Player('Player 1')
-    player2 = player.Player('Player 2')
-    player3 = player.Player('Player 3')
-    player4 = player.Player('Player 4')
-    player_list = [player1, player2, player3, player4]
-    return player_list
+def lock_answer(index):
+    x, y = change_1DAnswer_to_2D(index)
+    is_pressed_answer_boxes[x][y] = True
+    
+def unlock_button_press():
+    pygame.event.set_allowed(pygame.MOUSEBUTTONDOWN)
 
-def generate_answer_board():
+def change_2DAnswer_to_1D(boxx, boxy):
+    return TOTAL_ROWS*boxy + boxx
+
+def change_1DAnswer_to_2D(index): 
+    boxx = index % TOTAL_ROWS
+    boxy = index / TOTAL_ROWS
+    return int(boxx), int(boxy)
+
+def generate_answer_board(ALL_ANSWERS):
     # Create the board data structure, with answer options
     board = []
     answer = list(ALL_ANSWERS) # Copy all answer options
@@ -140,22 +116,18 @@ def generate_is_pressed_answer(val):
         is_pressed_answer_boxes.append([val] * TOTAL_ROWS)
     return is_pressed_answer_boxes
 
-def draw_answer_board(board, pressed, counter, turn, player_list):
+def reset_pressed_answers():
+    global is_pressed_answer_boxes
+    is_pressed_answer_boxes = generate_is_pressed_answer(False)
+
+def draw_answer_board(board, pressed, current_turn, player_list, QUESTION):
+    global main_answer_board, others_player_answers
     font = pygame.font.Font(None, 20)
     # Display question text
     display_textbox_horizontal(QUESTION, 20, WHITE, 80)
 
-    # Display time button
-    # Change time format to second
-    counter = str(counter)
-    if (counter == '10'): 
-        counter = '00:' + counter
-    else: 
-        counter = '00:0' + counter
-    display_text(counter, 20, WHITE, (WINDOW_WIDTH - XMARGIN - BOX_WIDTH, 400, BOX_WIDTH, BOX_HEIGHT))
-
     # Display turn button
-    turn = 'Turn: ' + str(turn)
+    turn = 'Turn: ' + str(current_turn)
     display_text(turn, 20, WHITE, (XMARGIN, 400, BOX_WIDTH, BOX_HEIGHT))
 
     # Draws all of the boxes in their pressed or not pressed state.
@@ -165,22 +137,23 @@ def draw_answer_board(board, pressed, counter, turn, player_list):
             left, top = left_top_coords_of_box(boxx, boxy)
             if not pressed[boxx][boxy]:
                 pygame.draw.rect(DISPLAYSURF, BOX_COLOR, (left, top, BOX_WIDTH, BOX_HEIGHT))
-            else: # Assume pressed = right answer
-                pygame.draw.rect(DISPLAYSURF, RIGHT_ANSWER_COLOR, (left, top, BOX_WIDTH, BOX_HEIGHT))
+            if pressed[boxx][boxy]: # Current player pressed
+                pygame.draw.rect(DISPLAYSURF, CHOSEN_ANSWER, (left, top, BOX_WIDTH, BOX_HEIGHT))
 
             answer_text = get_answer_value(board, boxx, boxy)
             draw_answer_text(answer_text, boxx, boxy)
     
     # Draw player list
     left = XMARGIN
-    top = 30
+    top = 40
     for index, player in enumerate(player_list):
-        player_score_str = player_list[index].get_name() + ': '+ str(player.get_score())
+        player_score_str = player.get_name() + ': ' + str(player.get_score())
         display_text(player_score_str, 20, WHITE, (left, 30, BOX_WIDTH, BOX_HEIGHT))
         left += (GAP_SIZE + BOX_WIDTH)
 
+
 def left_top_coords_of_box(boxx, boxy):
-    # Convert board coordinates to pixel coordinates
+    # Convert board coordinates to pisxel coordinates
     left = boxx * (BOX_WIDTH + GAP_SIZE) + XMARGIN
     top = boxy * (BOX_HEIGHT + GAP_SIZE) + YMARGIN
     return (left, top)
@@ -219,6 +192,5 @@ def display_text (string, font_size, font_color, position):
     text_value = font.render(string, True, font_color)
     DISPLAYSURF.blit(text_value, (text_rect.x, text_rect.y))
 
-    
 if __name__ == '__main__':
     main()

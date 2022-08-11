@@ -3,9 +3,6 @@ class Player:
     def __init__(self, name):
         self.name = name
         self.score = 0
-        self.is_active = False     # to keep track whether player is in the current game
-        self.is_connected = False  #to keep track whether player connects to socket
-        self.socket = None
     
     def __toStr__(self):
         return str(self.name)
@@ -16,14 +13,11 @@ class Player:
     def get_score(self):
         return self.score
 
+    def set_score(self, score):
+        self.score = score
+
     def increment_score(self):
         self.score += 1
-
-    def is_active(self):
-        return self.is_active
-
-    def is_connected(self):
-        return self.is_connected
 
     # Set methods: 
     def set_name(self, newName):
@@ -36,12 +30,6 @@ class Player:
             self.scoreErrorMsg()
         else:
             self.score = newScore
-
-    def set_to_active(self):
-        self.is_active = True
-
-    def set_to_connected(self):
-        self.is_connected = True
 
     def score_error_msg(self):
         return "Invalid Score: only integer."
