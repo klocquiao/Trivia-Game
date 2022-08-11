@@ -21,6 +21,7 @@ frame_rate = 60
 
 
 def open_game_over():
+# def open_game_over(winner_param):
     while True:
         font_large = pygame.font.SysFont('Calibri', 25, True, False)  
 
@@ -35,9 +36,8 @@ def open_game_over():
 
         screen.fill(NAVYBLUE) 
         # ----------- Display Winner -----------
-        winner_name = get_winner_name()
-        # winner_name = "Winner Tester"   #remove this -----------
-        title = font_large.render(f"*** {winner_name} Won! ***", True, ORANGE)
+        winner_param = get_winner_name()
+        title = font_large.render(f"*** {winner_param} Won! ***", True, ORANGE)
         title_center = title.get_rect(center=(SCREEN_WIDTH/2, SCREEN_HEIGHT/4))
         screen.blit(title, title_center)
 

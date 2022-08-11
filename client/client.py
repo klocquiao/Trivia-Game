@@ -1,6 +1,7 @@
 import socket
 from threading import Thread
 import json 
+# from game_over import open_game_over
 
 HOST = "127.0.0.1"
 PORT = 12345
@@ -40,8 +41,8 @@ def handle_message(data):
 
     elif message["token"] == "Result":
         print("---- Get winner:", message["winner"])
-        # set_winner_name(message["winner"])
-        set_winner_name("Winner_tester")   #remove this-------
+        set_winner_name(message["winner"])
+        # open_game_over(message["winner"])
 
 
 # To be binded by front-end team members
