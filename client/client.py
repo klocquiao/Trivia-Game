@@ -10,6 +10,8 @@ PORT = 12345
 MAX_MESSAGE_SIZE = 4096 
 
 my_socket = None
+
+# Variables populated by server
 is_layout_ready = False
 current_turn = 0
 player_list = []
@@ -21,6 +23,7 @@ has_winner = False
 def receiver_runner():
     while True:
         try:
+            # Receive message from a client
             data = my_socket.recv(MAX_MESSAGE_SIZE).decode("utf-8")
             handle_message(data)
         except socket.error as e: 
@@ -32,6 +35,8 @@ def handle_message(data):
     global player_list, question, answers, is_layout_ready, current_turn, round, has_winner
     message = json.loads(data)
     print("Data receive: ", message)
+
+    # Handle incoming messages from the server
     if message["token"] == "Name":
         tm = {"token": "Name", "name": player_name}
         send_message(tm)
@@ -58,30 +63,31 @@ def handle_message(data):
 
     elif message["token"] == "Locked":
         layout.unlock_button_press()
-
+    
     elif message["token"] == "Result":
         has_winner = True
         print("---- Get winner at client:", message["winner"])
         set_winner_name(message["winner"])
-        # open_game_over(message["winner"])
 
 def send_message(message):
+    # Send message to a specific player
     print("Message send: ", message)
     data = json.dumps(message)
     my_socket.sendall(bytes(data,encoding="utf-8"))
 
-#  Called from lobby
 def start_client():
     global my_socket
+
+    # Connect to server
     my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     my_socket.connect((HOST, PORT))
-
     print("Connected to server!")
+
+    # Start receiver thread for receiver messages from server
     receiver_thread = Thread(target=receiver_runner)
     receiver_thread.start()
 
 # Helpers 
-
 def is_enough_player():
     return is_layout_ready
 

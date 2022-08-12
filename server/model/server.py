@@ -16,6 +16,7 @@ game = None
 def receiver_runner(client):
     while True:
         try:
+            # Receive message from a client
             data = client.recv(MAX_MESSAGE_SIZE).decode("utf-8")
             handle_message(data)
         except:
@@ -50,30 +51,36 @@ def find_players():
             print("An error has occured when handling new client!")
 
 def handle_message(data):
+    # Handle incoming messages from the client
     message = json.loads(data)
     if message["token"] == "Answer":
-        print("Answer message receive")
+        print("Answer message received")
         game.current_round.check_player_answer(message)
 
 def broadcast_message(message):
+    # Broadcast message to all connected players
     data = json.dumps(message)
     for player in game.player_manager.get_players():
         player.get_socket().sendall(bytes(data,encoding="utf-8"))
 
 
 def send_message(player, message):
+    # Send message to a specific player
     data = json.dumps(message)
     player.get_socket().sendall(bytes(data,encoding="utf-8"))
 
 def start_server(new_game):
+    # Inject game object to make it accessible by server
     global game
     global my_socket
-    
     game = new_game
+
+    # Bind host to port and start listening for players
     my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     my_socket.bind((HOST, PORT))
     my_socket.listen()
 
+    # Wait for players to connect and create receiver threads for them
     find_players()
 
 def close_server():
