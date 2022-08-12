@@ -16,6 +16,7 @@ player_list = []
 question = []
 answers = []
 round = 1
+has_winner = False
 
 def receiver_runner():
     while True:
@@ -28,7 +29,7 @@ def receiver_runner():
             break
 
 def handle_message(data):
-    global player_list, question, answers, is_layout_ready, current_turn, round
+    global player_list, question, answers, is_layout_ready, current_turn, round, has_winner
     message = json.loads(data)
     print("Data receive: ", message)
     if message["token"] == "Name":
@@ -58,13 +59,18 @@ def handle_message(data):
     elif message["token"] == "Locked":
         layout.unlock_button_press()
 
-# To be binded by front-end team members
+    elif message["token"] == "Result":
+        has_winner = True
+        print("---- Get winner at client:", message["winner"])
+        set_winner_name(message["winner"])
+        # open_game_over(message["winner"])
+
 def send_message(message):
     print("Message send: ", message)
     data = json.dumps(message)
     my_socket.sendall(bytes(data,encoding="utf-8"))
 
-# Be called in lobby
+#  Called from lobby
 def start_client():
     global my_socket
     my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -106,3 +112,12 @@ def get_round():
 def get_turn():
     return current_turn
 
+def set_winner_name(winner_token):
+    global winner_name
+    winner_name = winner_token
+
+def get_winner_name():
+    return winner_name
+
+def has_the_winner():
+    return has_winner
