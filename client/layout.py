@@ -59,7 +59,7 @@ def main():
         mouse_pressed = False
 
         DISPLAYSURF.fill(BG_COLOR) # drawing the window
-        draw_answer_board(generate_answer_board(client.answers), is_pressed_answer_boxes, client.current_turn, client.player_list, client.question)
+        draw_answer_board(generate_answer_board(client.answers), is_pressed_answer_boxes, client.round, client.current_turn, client.player_list, client.question)
 
         for event in pygame.event.get(): # event handling loop
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
@@ -71,11 +71,11 @@ def main():
                 mousex, mousey = event.pos
                 mouse_pressed = True
 
-        boxx, boxy = get_box_at_pixel(mousex, mousey) # Column, row of answer_board. Index is from 0
+        boxx, boxy = get_box_at_pixel(mousex, mousey) # Column, row of answer_board
         if boxx != None and boxy != None: # If user touch answer box inside answer_board
             if not is_pressed_answer_boxes[boxx][boxy]: # If user only touch, not pressed
                 draw_highlight_box(boxx, boxy)
-            if not is_pressed_answer_boxes[boxx][boxy] and mouse_pressed: # When user pressed and choose correct answer
+            if not is_pressed_answer_boxes[boxx][boxy] and mouse_pressed:
                 is_pressed_answer_boxes[boxx][boxy] = True
                 answer_index = change_2DAnswer_to_1D(boxx, boxy)
                 client.send_message({"token" : "Answer", "answer" : answer_index, "name" : player_name})
@@ -103,12 +103,12 @@ def change_1DAnswer_to_2D(index):
 def generate_answer_board(ALL_ANSWERS):
     # Create the board data structure, with answer options
     board = []
-    answer = list(ALL_ANSWERS) # Copy all answer options
+    answer = list(ALL_ANSWERS)
     for x in range(TOTAL_ROWS):
         column = []
         for y in range(TOTAL_COLUMNS):
             column.append(answer[0])
-            del answer[0] # remove after assign
+            del answer[0]
         board.append(column)
     return board
 
@@ -123,21 +123,26 @@ def reset_pressed_answers():
     global is_pressed_answer_boxes
     is_pressed_answer_boxes = generate_is_pressed_answer(False)
 
-def draw_answer_board(board, pressed, current_turn, player_list, QUESTION):
+def draw_answer_board(board, pressed, round, current_turn, player_list, QUESTION):
     global main_answer_board, others_player_answers
     font = pygame.font.Font(None, 20)
     # Display question text
-    display_textbox_horizontal(QUESTION, 20, WHITE, 80)
+    display_textbox_horizontal(QUESTION, 25, WHITE, 100)
 
     # Display turn button
     turn = 'Turn: ' + str(current_turn)
-    display_text(turn, 20, WHITE, (XMARGIN, 400, BOX_WIDTH, BOX_HEIGHT))
+    display_text(turn, 20, ORANGE, (XMARGIN, 440, BOX_WIDTH, BOX_HEIGHT))
+
+    # Display round
+    round = 'Round: ' + str(round)
+    display_text(round, 20, ORANGE, (WINDOW_WIDTH - XMARGIN - BOX_WIDTH, 440, BOX_WIDTH, BOX_HEIGHT))
 
     # Draws all of the boxes in their pressed or not pressed state.
     BOX_COLOR = WHITE
     for boxx in range(TOTAL_ROWS):
         for boxy in range(TOTAL_COLUMNS):
             left, top = left_top_coords_of_box(boxx, boxy)
+            top += 20
             if not pressed[boxx][boxy]:
                 pygame.draw.rect(DISPLAYSURF, BOX_COLOR, (left, top, BOX_WIDTH, BOX_HEIGHT))
             if pressed[boxx][boxy]: # Current player pressed
@@ -148,10 +153,10 @@ def draw_answer_board(board, pressed, current_turn, player_list, QUESTION):
     
     # Draw player list
     left = XMARGIN
-    top = 40
+    top = 50
     for index, player in enumerate(player_list):
         player_score_str = player.get_name() + ': ' + str(player.get_score())
-        display_text(player_score_str, 20, WHITE, (left, 30, BOX_WIDTH, BOX_HEIGHT))
+        display_text(player_score_str, 20, ORANGE, (left, top, BOX_WIDTH, BOX_HEIGHT))
         left += (GAP_SIZE + BOX_WIDTH)
 
 
@@ -176,11 +181,12 @@ def get_answer_value(board, boxx, boxy):
 def draw_answer_text(answer, boxx, boxy):
     half =    int(BOX_HEIGHT * 0.5)  # syntactic sugar
     left, top = left_top_coords_of_box(boxx, boxy) # get pixel coords from board coords
-    display_text(answer, 20, BLACK, (left + 10, top, 100, half))
+    display_text(answer, 20, BLACK, (left + 10, top + 35, 100, half))
 
 
 def draw_highlight_box(boxx, boxy):
     left, top = left_top_coords_of_box(boxx, boxy)
+    top += 20
     pygame.draw.rect(DISPLAYSURF, HIGHLIGHT_COLOR, (left - 5, top - 5, BOX_WIDTH + 10, BOX_HEIGHT + 10), 4)
 
 def display_textbox_horizontal (string, font_size, font_color, paddingTop):
