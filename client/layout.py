@@ -44,7 +44,7 @@ def main():
     
     FPSCLOCK = pygame.time.Clock()
     DISPLAYSURF = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-    pygame.display.set_caption('*** Trivia Game ***')
+    # pygame.display.set_caption('*** Trivia Game ***')
 
     mousex = 0 # used to store x coordinate of mouse event
     mousey = 0 # used to store y coordinate of mouse event
@@ -56,12 +56,11 @@ def main():
     is_pressed_answer_boxes = generate_is_pressed_answer(False)
 
 
-    # pygame.display.set_caption(f'*** Trivia Game *** Player: {player_name}')
+    pygame.display.set_caption(f'*** Trivia Game *** Player: {player_name}')
 
     pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
 
     while True: # main game loop
-        print("----- has winner: ", client.has_the_winner())
         if client.has_the_winner() == False:
             mouse_pressed = False
 
@@ -92,6 +91,7 @@ def main():
        
         
         if client.has_the_winner() == True:
+            print("----- has winner: ", client.has_the_winner())
             game_over.open_game_over()
         
         # Redraw the screen and wait a clock tick.

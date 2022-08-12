@@ -4,7 +4,6 @@ import json
 from player import Player
 import layout
 import time 
-# from game_over import open_game_over
 import game_over
 
 HOST = "127.0.0.1"
