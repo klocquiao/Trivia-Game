@@ -4,6 +4,7 @@ import json
 from player import Player
 import layout
 import time 
+import game_over
 
 HOST = "127.0.0.1"
 PORT = 12345
@@ -16,6 +17,7 @@ player_list = []
 question = []
 answers = []
 round = 1
+has_winner = False
 
 def receiver_runner():
     while True:
@@ -27,8 +29,21 @@ def receiver_runner():
             my_socket.close()
             break
 
+# get player's name from lobby
+def new_player(pname):
+    global player_name
+    player_name = pname
+
+def set_winner_name(winner_token):
+    global winner_name
+    winner_name = winner_token
+
+# pass to game-over page:
+def get_winner_name():
+    return winner_name
+
 def handle_message(data):
-    global player_list, question, answers, is_layout_ready, current_turn, round
+    global player_list, question, answers, is_layout_ready, current_turn, round, has_winner
     message = json.loads(data)
     print("Data receive: ", message)
     if message["token"] == "Name":
@@ -57,6 +72,12 @@ def handle_message(data):
 
     elif message["token"] == "Locked":
         layout.unlock_button_press()
+
+    elif message["token"] == "Result":
+        has_winner = True
+        print("---- Get winner:", message["winner"])
+        set_winner_name(message["winner"])
+        # open_game_over(message["winner"])
 
 # To be binded by front-end team members
 def send_message(message):
@@ -106,3 +127,6 @@ def get_round():
 def get_turn():
     return current_turn
 
+
+def has_the_winner():
+    return has_winner
