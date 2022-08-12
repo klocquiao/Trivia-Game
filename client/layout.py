@@ -41,6 +41,7 @@ is_pressed_answer_boxes = []
 def main():
     global FPSCLOCK, DISPLAYSURF, is_pressed_answer_boxes
     pygame.init()
+    
     FPSCLOCK = pygame.time.Clock()
     DISPLAYSURF = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
     pygame.display.set_caption('*** Trivia Game ***')
@@ -54,7 +55,10 @@ def main():
     player_name = client.get_player_name()
     is_pressed_answer_boxes = generate_is_pressed_answer(False)
 
+
     # pygame.display.set_caption(f'*** Trivia Game *** Player: {player_name}')
+
+    pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
 
     while True: # main game loop
         print("----- has winner: ", client.has_the_winner())
