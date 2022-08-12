@@ -11,7 +11,7 @@ MAX_MESSAGE_SIZE = 4096
 
 my_socket = None
 is_layout_ready = False
-current_turn = 1
+current_turn = 0
 player_list = []
 question = []
 answers = []
@@ -40,6 +40,7 @@ def handle_message(data):
 
     elif message["token"] == "Round":
         is_layout_ready = True
+        current_turn = 0
         round = message["number"]
         question = message["question"]
         answers = message["answers"]
@@ -52,9 +53,6 @@ def handle_message(data):
     elif message["token"] == "Player":
         print("Receive answer")
         update_player_list(message["name"], int(message["score"]))
-
-    elif message["token"] == "Lock":
-        print("Receive lock")
         layout.lock_answer(message["answer"])
 
     elif message["token"] == "Locked":
