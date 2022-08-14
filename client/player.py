@@ -33,5 +33,3 @@ class Player:
 
     def score_error_msg(self):
         return "Invalid Score: only integer."
-
-    ''' Might be more methods implemented later...'''

@@ -84,7 +84,7 @@ while run and display_lobby:
                     new_player(player.get_name())
                     start_client()
                     if (is_enough_player()):
-                        main()
+                        main() #open game page
                     else: 
                         at_lobby_page = False #direct to waiting page
                 
@@ -157,8 +157,7 @@ while run and display_lobby:
 
 
     # update game state
-    pygame.display.update()
-    
+    pygame.display.update()    
     clock.tick(frame_rate)
 
 

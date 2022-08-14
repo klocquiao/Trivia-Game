@@ -23,7 +23,7 @@ has_winner = False
 def receiver_runner():
     while True:
         try:
-            # Receive message from a client
+            # Receive message from the server
             data = my_socket.recv(MAX_MESSAGE_SIZE).decode("utf-8")
             handle_message(data)
         except socket.error as e: 
@@ -80,17 +80,20 @@ def start_client():
 
     # Connect to server
     my_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    my_socket.connect((HOST, PORT))
+    my_socket.connect((HOST, PORT)) 
     print("Connected to server!")
 
     # Start receiver thread for receiver messages from server
     receiver_thread = Thread(target=receiver_runner)
     receiver_thread.start()
 
-# Helpers 
+# Helpers:
+
+#open game page once players are enough
 def is_enough_player():
     return is_layout_ready
 
+#get player's name from lobby
 def new_player(pname):
     global player_name
     player_name = pname
@@ -125,5 +128,6 @@ def set_winner_name(winner_token):
 def get_winner_name():
     return winner_name
 
+# open game over page once there's a winner
 def has_the_winner():
     return has_winner
