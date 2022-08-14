@@ -17,5 +17,6 @@
 - More detail for help, see https://www.pygame.org/wiki/GettingStarted
 
 ## Run the game
+- Setup ad hoc network and change address in client and server accordingly
 - To start server, at server module, run `python3 main.py`(`python main.py` on Windows) 
 - To start game, at client module, run `phthon3 lobby.py` (`phthon lobby.py` on Windows)
