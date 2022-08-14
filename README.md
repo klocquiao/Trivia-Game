@@ -1,6 +1,6 @@
 ﻿# cmpt371FinalProject
  
- - Project name to be determined.
+## Trivia game
 
 - In this project, we are using Pygame for game UI where clients play at.
 
