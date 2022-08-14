@@ -1,6 +1,6 @@
 ﻿# cmpt371FinalProject
  
- - Project name to be determined.
+## Trivia game
 
 - In this project, we are using Pygame for game UI where clients play at.
 
@@ -17,4 +17,5 @@
 - More detail for help, see https://www.pygame.org/wiki/GettingStarted
 
 ## Run the game
-- To Start server, at server module, run `python3 main.py`
+- To start server, at server module, run `python3 main.py`(`python main.py` on Windows) 
+- To start game, at client module, run `phthon3 lobby.py` (`phthon lobby.py` on Windows)

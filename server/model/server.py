@@ -8,7 +8,7 @@ HOST = "127.0.0.1"
 PORT = 12345
 
 NUMBER_OF_CLIENTS = 4
-MAX_MESSAGE_SIZE = 4096 
+MAX_MESSAGE_SIZE = 4096  #max byte size
 
 my_socket = None
 game = None

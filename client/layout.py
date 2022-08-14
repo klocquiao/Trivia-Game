@@ -83,9 +83,9 @@ def main():
                     client.send_message({"token" : "Answer", "answer" : answer_index, "name" : player_name})
                     pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
        
+       #====== Open game over page ==========
         if client.has_the_winner() == True:
-            print("===== has winner: ", client.has_the_winner())
-            game_over.open_game_over()
+            game_over.open_game_over() 
 
         # Redraw the screen and wait a clock tick.
         pygame.display.update()
