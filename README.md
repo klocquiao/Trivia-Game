@@ -1,7 +1,4 @@
-﻿# cmpt371FinalProject
- 
-## Trivia game
-
+﻿# Trivia Blitz
 - In this project, we are using Pygame for game UI where clients play at.
 
 ## Setup Pygame
